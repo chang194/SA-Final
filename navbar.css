@@ -1,0 +1,17 @@
+.navbar .btn-primary {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .navbar .btn-primary img {
+    height: 36px;
+    width: auto;
+    vertical-align: middle;
+  }
+
+  .navbar .navbar-brand img {
+    height: 36px;
+    width: auto;
+    vertical-align: middle; 
+  }
