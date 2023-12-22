@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Modify Room Information</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="navbar.css">
+    <link rel="stylesheet" href="button.css">
+    <style>
+        .row-gap {
+            margin-bottom: 20px;
+        }
+
+        .custom-section {
+            margin-top: 120px;
+            margin-bottom: 120px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar bg-white navbar-white p-3 navbar-expand-lg">
+        <div class="container">
+            <a href="hotelowner.html" class="navbar-brand">
+                <img src="LOGO.png" alt="logo">
+            </a>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="會員.png" alt="會員圖標">
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2>修改房型信息</h2>
+        <form action="/update_room" method="post" enctype="multipart/form-data">
+            <!-- 表单内容 -->
+
+            <button type="button" class="btn btn-success" id="addRoomTypeBtn">新增房型</button>
+            <a href="hotelowner.html" class="btn btn-primary" id="backButton">回到房型管理介面</a>
+        </form>
+    </div>
+
+    <div class="container text-center custom-section">
+        <div class="row roomTypesContainer">
+            <!-- 房型卡片将会动态添加到这里 -->
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./login.js"></script>
+    <script>
+        const addRoomTypeBtn = document.getElementById('addRoomTypeBtn');
+        const roomTypesContainer = document.querySelector('.roomTypesContainer');
+
+        // 监听新增房型按钮的点击事件
+        addRoomTypeBtn.addEventListener('click', function () {
+            // 创建新的房型卡片
+            const newRoomType = createRoomCard();
+            // 将新房型插入到房型容器中
+            roomTypesContainer.appendChild(newRoomType);
+        });
+
+        // 创建房型卡片的函数
+        function createRoomCard() {
+            const roomCard = document.createElement('div');
+            roomCard.className = 'col-6';
+            roomCard.innerHTML = `
+                <div class="card shadow-lg">
+                    <img src="狗1.jpg" alt="" class="card-img-top">
+                    <div class="card-body">
+                        <h3 class="card-title">房型名稱</h3>
+                        <label for="roomavailable">剩餘房間數<input type="number" name="roomavailable" class="roomavailable"></label><br>
+                        <button class="btn btn-primary deleteBtn">刪除</button>
+                        <a href="#" class="btn btn-primary updateBtn">修改</a>
+                    </div>
+                </div>
+            `;
+            return roomCard;
+        }
+    </script>
+
+</body>
+
+</html>
