@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--讀資料的js還沒寫-->
+<!--讀資料的js、修改刪除新增功能還沒寫-->
 <head>
     <meta charset="UTF-8">
     <title>User Profile</title>
@@ -19,6 +19,14 @@
 
     .card.label{
         padding-inline: 5px;
+    }
+
+    .roomavailable,
+    input[type="number"]
+    {
+        border-radius: 30px;
+        padding-inline: 5px;
+        width: 80px;
     }
     
     </style>
@@ -42,59 +50,78 @@
     </nav>
 
     <div class="container text-center custom-section">
-        <div class="row">
-            <div class="col-4">
-                <h2>已建立房型</h2>
-                <div class="card shadow-lg">
-                    <img src="狗1.jpg" alt="" class="card-img-top">
-                    <div class="card-body">
-                      <h3 class="card-title">房型名稱</h3>
-                      <label for="roomavailable">剩餘房間數
-                        <input type="text" name="roomavailable" id="roomavailable" class="form-control form-control-lg">
-                      </label>
-                      <button class="btn btn-primary">查看詳細資訊</button>
-                    </div>
+      <div class="row">
+          <div class="col-6">
+              <h2>訂單管理</h2>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">訂單編號</th>
+                    <th scope="col">房客姓名</th>
+                    <th scope="col">房間id</th>
+                    <th scope="col">下單日期</th>
+                    <th scope="col">住宿日期</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td></td>
+                    <td></td>
+                  <tr>
+                    <th scope="row">3</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  </tr>
+                </tbody>
+              </table>
+          </div>
+          <div class="col-6">
+              <h2>房型管理</h2>
+              <div class="row">
+                  <div class="col">
+                      <div class="card shadow-lg">
+                        <img src="狗1.jpg" alt="" class="card-img-top">
+                        <div class="card-body">
+                          <h3 class="card-title">房型名稱</h3>
+                          <label for="roomavailable">剩餘房間數<input type="number" name="roomavailable" id="roomavailable" ></label><br>
+                         <button class="btn btn-primary">刪除</button>
+                         <button class="btn btn-primary">修改</button>
+                        </div>
+                      </div>
                   </div>
-            </div>
-            <div class="col-8">
-                <h2>訂單管理</h2>
-                <table class="table">
-                    <thead>
-                      <tr>
-                        <th scope="col">訂單編號</th>
-                        <th scope="col">房客姓名</th>
-                        <th scope="col">房間id</th>
-                        <th scope="col">下單日期</th>
-                        <th scope="col">住宿日期</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      <tr>
-                        <th scope="row">2</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td></td>
-                        <td></td>
-                      <tr>
-                        <th scope="row">3</th>
-                        <td>Mark</td>
-                        <td>Otto</td>
-                        <td></td>
-                        <td></td>
-                      </tr>
-                      </tr>
-                    </tbody>
-                  </table>
-            </div>
-        </div>
-    </div>
+                  <div class="col">
+                      <div class="card shadow-lg">
+                      <img src="狗1.jpg" alt="" class="card-img-top">
+                        <div class="card-body">
+                          <h3 class="card-title">房型名稱</h3>
+                          <label for="roomavailable">剩餘房間數<input type="number" name="roomavailable" id="roomavailable" ></label><br>
+                        <button class="btn btn-primary">刪除</button>
+                        <button class="btn btn-primary">修改</button>
+                  </div>
+                      </div>
+                  </div>
+              </div>
+              <button class="btn btn-success mt-3" id="addRoomTypeBtn">新增房型</button>
+          </div>
+      </div>
+  </div>
+  
+
+    
+  
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./login.js"></script>

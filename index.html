@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Document</title>
@@ -14,20 +15,32 @@
     }
 
     .custom-section {
-      margin-top: 150px;
-      margin-bottom: 150px;
+      margin-top: 70px;
+      margin-bottom: 100px;
       /* 調整垂直距離，可以根據需要更改數值 */
     }
 
     .row-gap {
       margin-bottom: 20px;
-      /* 設置兩個 row 之間的留白，可以根據需求調整數值 */
     }
 
     .search-box {
       background-color: #fff;
       border-radius: 30px;
+      padding: 5px;
+    }
+
+    .search-keyword {
+      background-color:transparent;
+      border-radius: 30px;
       padding: 10px;
+    }
+
+    input[type="search"] {
+      padding: 3px;
+      width: 250px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
     }
 
     label,
@@ -93,7 +106,14 @@
   <div class="p-5 text-center custom-section">
     <h1>CODA</h1>
     <div class="col-lg-4 mx-auto">
-      <div class="search-box">
+      <div class="search-keyword row-gap">
+        <form action="/search" method="get">
+          <label for="searchInput">關鍵字</label>
+          <input type="search" id="searchInput" name="search" placeholder="輸入關鍵字">
+          <button class="search-btn" type="submit">搜尋</button>
+        </form>
+      </div>
+      <div class="search-box row-gap">
         <form action="/search" method="get">
           <div class="search-inputs">
             <label for="location">選擇地區：</label>
@@ -102,10 +122,13 @@
               <option value="region2">新北</option>
               <option value="region3">桃園</option>
               <option value="region4">基隆</option>
-            </select>
+            </select><br>
 
-            <label for="date">選擇日期：</label>
-            <input type="date" id="date" name="date"><br>
+            <label for="check-in">入住日期：</label>
+            <input type="date" id="check-in" name="check-in">
+
+            <label for="check-out">退房日期：</label>
+            <input type="date" id="check-out" name="check-out"><br>
 
             <label for="people">選擇人數：</label>
             <input type="number" id="people" name="people" min="1" max="10" value="1">
@@ -126,6 +149,7 @@
 
   <div class="p-5">
     <div class="container">
+      <h1 class="row-gap">熱門房型</h1>
       <div class="row g-4 row-gap">
         <div class="col-lg">
           <div class="card shadow-lg">
@@ -133,7 +157,7 @@
             <div class="card-body">
               <h3 class="card-title">Hotel 1</h3>
               <p class="card-text">hotel info</p>
-              <button class="btn btn-primary">瞭解更多</button>
+              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
             </div>
           </div>
         </div>
@@ -143,7 +167,7 @@
             <div class="card-body">
               <h3 class="card-title">Hotel 2</h3>
               <p class="card-text">hotel info</p>
-              <button class="btn btn-primary">瞭解更多</button>
+              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
             </div>
           </div>
         </div>
@@ -153,7 +177,7 @@
             <div class="card-body">
               <h3 class="card-title">Hotel 3</h3>
               <p class="card-text">hotel info</p>
-              <button class="btn btn-primary">瞭解更多</button>
+              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
             </div>
           </div>
         </div>
@@ -165,7 +189,7 @@
             <div class="card-body">
               <h3 class="card-title">Hotel 4</h3>
               <p class="card-text">hotel info</p>
-              <button class="btn btn-primary">瞭解更多</button>
+              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
             </div>
           </div>
         </div>
@@ -175,7 +199,7 @@
             <div class="card-body">
               <h3 class="card-title">Hotel 5</h3>
               <p class="card-text">hotel info</p>
-              <button class="btn btn-primary">瞭解更多</button>
+              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
             </div>
           </div>
         </div>
@@ -185,7 +209,7 @@
             <div class="card-body">
               <h3 class="card-title">Hotel 6</h3>
               <p class="card-text">hotel info</p>
-              <button class="btn btn-primary">瞭解更多</button>
+              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--差確認註冊的javascript-->
+<!--差112行AJAX讀取資料庫-->
+
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
@@ -26,11 +27,16 @@
             <a href="index.html" class="navbar-brand">
                 <img src="LOGO.png" alt="logo">
             </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <button class="btn btn-primary" onclick="login()">
-                        <img src="會員.png" alt="會員圖標">
-                    </button>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="會員.png" alt="會員圖標">
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                    ${isLoggedIn ?
+                    `<li><a class="dropdown-item" href="member.html">會員資料</a></li>
+                    <li><button class="dropdown-item" onclick="logout()">登出</button></li>` :
+                    `<li><a class="dropdown-item" href="login.html">登入</a></li>`}
                 </ul>
             </div>
         </div>
@@ -75,6 +81,52 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./login.js"></script>
+    <script>
+        document.querySelector('form').addEventListener('submit', function (event) {
+            event.preventDefault(); // 阻止表單預設提交行為
+
+            var email = document.getElementById('email').value;
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            var confirmPassword = document.getElementById('confirmPassword').value;
+            var userType = document.getElementById('userType').value;
+
+            // 驗證電子郵件格式
+            if (!validateEmail(email)) {
+                alert('請輸入有效的電子郵件地址');
+                return false;
+            }
+
+            // 驗證密碼與確認密碼是否相符
+            if (password !== confirmPassword) {
+                alert('密碼與確認密碼不相符');
+                return false;
+            }
+
+            // 確認是否選擇了身份
+            if (userType === 'Select') {
+                alert('請選擇身份');
+                return false;
+            }
+
+            // TODO: 在這裡可以使用 AJAX 或其他方法將資料發送到後端進行註冊處理
+
+            // 註冊成功後進行頁面導向
+            if (userType === 'customer') {
+                window.location.href = 'login.html'; // 房客選擇時導向登入畫面
+            } else if (userType === 'hotelowner') {
+                window.location.href = 'createhotel.html'; // 住宿業者選擇時導向 createhotel.html
+            }
+        });
+
+        // 驗證電子郵件格式的函數
+        function validateEmail(email) {
+            var re = /\S+@\S+\.\S+/;
+            return re.test(email);
+        }
+
+
+    </script>
 </body>
 
 </html>

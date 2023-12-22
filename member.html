@@ -36,15 +36,18 @@
             <a href="index.html" class="navbar-brand">
                 <img src="LOGO.png" alt="logo">
             </a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="member.html">
-                            <img src="會員.png" alt="會員圖標">
-                        </a>
-                    </li>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  <img src="會員.png" alt="會員圖標">
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                  ${isLoggedIn ?
+                  `<li><a class="dropdown-item" href="member.html">會員資料</a></li>
+                  <li><button class="dropdown-item" onclick="logout()">登出</button></li>` :
+                  `<li><a class="dropdown-item" href="login.html">登入</a></li>`}
                 </ul>
-            </div>
+              </div>
         </div>
     </nav>
 
