@@ -53,6 +53,7 @@ public abstract class Member {
 		jso.put("password", getPassword());
 		jso.put("birthday",getBirthday());
 		jso.put("Introduction", getIntro());
+		jso.put("modified_time", getModified_time());
 		return jso;
 	}
 }
