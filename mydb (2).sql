@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2023-12-23 05:30:09
+-- 產生時間： 2023-12-23 05:34:51
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -257,7 +257,7 @@ CREATE TABLE `tbl_hotelowner` (
 --
 
 INSERT INTO `tbl_hotelowner` (`hotelowner_id`, `hotelowner _name`, `hotelowner _email`, `hotelowner_password`, `modified_time`, `hotel_id`, `intro`, `birthday`) VALUES
-(1, '蔡知遠', 'DuaTaoGa@gmail.com', '110403553', '2023-12-23', 1, 'this is 蔡知遠', NULL),
+(1, '蔡知遠', 'DuaTaoGa@gmail.com', '110403553', '2023-12-23', 1, 'this is 蔡知遠', '2004-12-11'),
 (2, 'hotelOwner2', 'Owner2@gmail.com', '22pass', '2023-12-23', 2, NULL, NULL),
 (3, 'hotelOwner3', 'Owner3@gmail.com', '33pass', '2023-12-23', 3, NULL, NULL),
 (4, 'hotelOwner4', 'owner4@gmail.com', '44pass', '2023-12-23', 4, NULL, NULL);
