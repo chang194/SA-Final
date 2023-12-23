@@ -230,7 +230,7 @@ CREATE TABLE `tbl_hotel` (
 --
 
 INSERT INTO `tbl_hotel` (`hotel_id`, `hotel_name`, `hotel_location`, `hotel_image`, `hotel_facilities`, `hotel_intro`) VALUES
-(1, 'hotel test 1', '中大路300號', 'https://media.cnn.com/api/v1/images/stellar/prod/150514125141-3-hotel-ritz-paris.jpg?q=w_2000,h_1500,x_0,y_0,c_fill/h_618', '只有床', '大型縫合怪旅店'),
+(1, 'hotel test 1', '桃園市中大路300號', 'https://media.cnn.com/api/v1/images/stellar/prod/150514125141-3-hotel-ritz-paris.jpg?q=w_2000,h_1500,x_0,y_0,c_fill/h_618', '只有床', '大型縫合怪旅店'),
 (2, '旅居文旅-中壢館', '320桃園市中壢區延平路216號', 'https://lh3.googleusercontent.com/gps-proxy/AMy85WKD7hcPdwHJ0QhqHC18VtwrFqjvaMpMcuET8T0G7n6F2m8irFJgnL80igXBUXcD0AwQBPlwq00ao_6DTg36DTE5s95Sexj_qRe4_OzRjh9V-Bm8GD-s750zq8ps_nvlMM_acJlF3-sq2vGYgI1FAH9chxzOWVcGc4PnEYe6HWahAPiO1TsYxb6_5A=w408-h544-k-no', '\r\n公共停車位\r\n接機服務\r\n機場接駁服務\r\n圖書館\r\n咖啡廳\r\n行李寄存\r\n免費\r\n喚醒服務\r\n24小時櫃檯服務', '旅居 中壢館'),
 (3, '桃園大溪笠復威斯汀度假飯店', '桃園, 大溪區, 日新路166號', 'https://ak-d.tripcdn.com/images/0202v120009bxk551DBDF_R_960_660_R5_D.webp', '高爾夫球場\r\n室內泳池\r\n室外泳池\r\n三溫暖\r\nSpa\r\n健身房\r\n停車免費\r\n酒吧\r\n餐廳\r\n兒童遊樂場\r\n兒童俱樂部\r\n24小時櫃檯服務\r\n公共空間 Wi-Fi免費\r\n', '桃園大溪笠復威斯汀度假飯店位處大北部地區的美麗後花園－大溪，距離北部主要都會地區只要一小時內車程，比鄰全台灣最優質的高爾夫球場之一的大溪球場。飯店有舒適宜人的客套房，每間客房皆有面向蔥鬱林蔭景觀的獨立陽台且備有聞名於世的威斯汀天夢之床，使賓客在度假時擁享酣然好夢。為了滿足家庭市場，飯店為了3-12歲的孩童設置專屬的遊憩空間－威斯汀孩童俱樂部，在這個威斯汀孩童俱樂部，無論是玩樂在各項遊樂設備或體驗手遊創作，全家人皆可以全方位的感受幸福的度假時光，留下最鮮活的度假回憶。'),
 (4, '桃園福緣山莊民宿(Fu-Yam Hostel)', '336, 桃園, 復興區, 華陵村11鄰180-7號', 'https://ak-d.tripcdn.com/images/0224b12000a5q8i0c1BE3_R_452_274_R5_D.jpg', NULL, '福緣山莊位在桃園縣北台灣－最有氧的拉拉山風景特定區，比鄰拉拉溪畔。山莊共有三幢獨棟木屋，提供旅客安靜、幹凈、寬敞的環境,來到青山環抱、溪水依偎的環境中，福緣山莊可以給您一個完全舒壓的假期。福緣的主人本著惜福的心歡迎您來分福緣山莊的一切！在前往福緣山莊的沿途之中，相信北橫沿線的美麗風景，也會讓您駐足許久！');
