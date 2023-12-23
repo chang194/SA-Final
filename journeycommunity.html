@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="navbar.css">
+  <script src="https://kit.fontawesome.com/73362ad498.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background-image: url('picture/旅遊社群.jpg'); /*有時間做輪播*/
+      background-size: 100% 600px;
+      background-repeat: no-repeat;
+    }
+  
+    .custom-section {
+      margin-top: 150px;
+      margin-bottom: 150px;
+      /* 調整垂直距離，可以根據需要更改數值 */
+    }
+
+    .row-gap {
+      margin-bottom: 20px;
+      /* 設置兩個 row 之間的留白，可以根據需求調整數值 */
+    }
+
+    .search-box {
+      background-color: #fff;
+      border-radius: 30px;
+      padding: 10px;
+    }
+
+
+    input {
+      margin-bottom: 3px;
+      margin: 10px;
+    }
+
+    .search-btn {
+      margin-top: 10px;
+      padding: 5px 5px;
+      background-color: #193B5B;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+    }
+
+    input[type="text"]{
+      padding: 5px;
+      width: 150px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+    }
+
+    h1{
+      color:white;
+    }
+
+    .lovebutton { /*加入喜愛清單按紐*/
+      background-color: #bed9eb;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      font-size: 20px;
+      cursor: pointer;
+      position: absolute; 
+      right:20px;
+    }
+
+    .likebutton{ /*追蹤使用者按紐*/
+      background-color: #fff;
+      color: black;
+      border: none;
+      padding: auto;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+
+<body>
+  <nav class="navbar bg-white navbar-white p-1 navbar-expand-lg">
+    <div class="container">
+      <a href="index.html" class="navbar-brand">
+        <img src="picture/LOGO.png" alt="logo">
+      </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item" id="mineNavItem" style="display: none;">
+            <a href="mine.html" class="nav-link">我的內容</a>
+          </li>
+        </ul>
+        <ul>
+         <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" id="travelerDropdown" data-bs-toggle="dropdown"
+            aria-expanded="false">
+            <img src="picture/會員.png" alt="會員圖標">
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="travelerDropdown">
+            ${isLoggedIn ?
+            `<li><a class="dropdown-item" href="show.html">我的介面</a></li>
+            <li><button class="dropdown-item" onclick="logout()">登出</button></li>` :
+            `<li><a class="dropdown-item" href="login.html">登入</a></li>`}
+          </ul>
+         </div>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="p-5 text-center custom-section">
+    <h1>CODA</h1>
+    <div class="col-lg-4 mx-auto">
+      <div class="search-box">
+        <form action="searchoutcome.html" method="post"> <!--form action是提交表單會傳去的地方；get is點選按鈕傳入的直；post is 使用者輸入的職-->
+          <label for="keyword">請輸入想查詢的旅程(景點)關鍵字：</label>
+          <input type="text" id="keyword" name="keyword" placeholder="例：桃園機場" size="18" value="">
+          <input class="search-btn" type="submit" value="搜尋" onclick="search()">
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-5"> <!--padding-->
+    <div class="container">
+      <div class="row g-4 row-gap">
+        <h2 class="outcome">熱門推薦</h2>
+        <div class="col-lg">
+          <div class="card shadow-lg"> <!--shadow陰影-->
+            <div style="position: relative;" class="card-body">
+              <h3 class="card-title">journey 1</h3>
+              <p class="card-text">
+                journey founder 1
+                <button style="display: inline-block" class="likebutton" onclick="putliker();">
+                  <i class="fa-regular fa-heart"></i>
+                </button>
+              </p>
+              <img src="picture/狗1.jpg" alt="旅程/社群名字" class="card-img-top">
+              <button class="lovebutton" onclick="putfavotitelist();">
+                <i class="fa-regular fa-star"></i>
+              </button>
+              <br><br>
+              <div class="text-center">
+                <button class="btn btn-primary">瞭解更多</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg">
+          <div class="card shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">journey 2</h3>
+              <p class="card-text">
+                journey founder 2
+                <button style="display: inline-block" class="likebutton" onclick="putliker();">
+                  <i class="fa-regular fa-heart"></i>
+                </button>
+              </p>
+              <img src="picture/狗2.jpg" alt="" class="card-img-top">
+              <button class="lovebutton" onclick="putfavotitelist();">
+                <i class="fa-regular fa-star"></i>
+              </button>
+              <br><br>
+              <div class="text-center">
+              <button class="btn btn-primary">瞭解更多</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg">
+          <div class="card shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">journey 3</h3>
+              <p class="card-text">
+                journey founder 3
+                <i class="fa-regular fa-heart"></i>
+              </p>
+              <img src="picture/狗3.jpg" alt="" class="card-img-top">
+              <button class="lovebutton" onclick="putfavotitelist();">
+                <i class="fa-regular fa-star"></i>
+              </button>
+              <br><br>
+              <div class="text-center">
+              <button class="btn btn-primary">瞭解更多</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row g-4 row-gap">
+        <h2>歷史瀏覽</h2>
+        <div class="col-lg">
+          <div class="card shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">journey 4</h3>
+              <p class="card-text">
+                journey founder 4
+                <i class="fa-regular fa-heart"></i>
+              </p>
+              <img src="picture/狗4.jpg" alt="旅程/社群名字" class="card-img-top">
+              <button class="lovebutton" onclick="putfavotitelist();">
+                <i class="fa-regular fa-star"></i>
+              </button>
+              <br><br>
+              <div class="text-center">
+              <button class="btn btn-primary">瞭解更多</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg">
+          <div class="card shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">journey 5</h3>
+              <p class="card-text">
+                journey founder 5
+                <button style="display: inline-block" class="likebutton" onclick="putliker();">
+                  <i class="fa-regular fa-heart"></i>
+                </button>
+              </p>
+              <img src="picture/狗5.jpg" alt="旅程/社群名字" class="card-img-top">
+              <button class="lovebutton" onclick="putfavotitelist();">
+                <i class="fa-regular fa-star"></i>
+              </button>
+              <br><br>
+              <div class="text-center">
+              <button class="btn btn-primary">瞭解更多</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg">
+          <div class="card shadow-lg">
+            <div class="card-body">
+              <h3 class="card-title">journey 6</h3>
+              <p class="card-text">
+                journey founder 6
+                <i class="fa-regular fa-heart"></i>
+              </p>
+              <img src="picture/狗6.jpg" alt="旅程/社群名字" class="card-img-top">
+              <button class="lovebutton" onclick="putfavotitelist();">
+                <i class="fa-regular fa-star"></i>
+              </button>
+              <br><br>
+              <div class="text-center">
+              <button class="btn btn-primary">瞭解更多</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./login.js"></script>
+</body>
+
+</html>
