@@ -2,7 +2,7 @@ package app;
 
 import java.sql.*;
 import org.json.*;
-
+import java.time.*;
 import util.DBMgr;
 
 public class RoomHelper {
@@ -298,5 +298,53 @@ public class RoomHelper {
         response.put("row", row);
 
         return response;
+    }
+
+    /**
+     * 取得空房數量
+     *
+     * @param id 房型id
+     * @param checkin_date 入住日期
+     * @param checkout_date 退房日期
+     * @return the JSONObject 回傳SQL指令執行結果與執行之資料
+     */
+    public int getAvailableNumber(int id, LocalDate checkin_date, LocalDate checkout_date){
+        
+        String exexcute_sql = "";
+        int minAvailableQuantity = 0;
+        
+        try {
+            conn = DBMgr.getConnection();
+            String sql = "SELECT MIN(available_quantity) AS min_available_quantity " +
+                     "FROM `mydb`.`tbl_Room_Availability` " +
+                     "WHERE room_id = ? AND date BETWEEN ? AND DATE_SUB(?, INTERVAL 1 DAY)";
+
+            pres = conn.prepareStatement(sql);
+            pres.setInt(1, id);
+            pres.setDate(2, java.sql.Date.valueOf(checkin_date));
+            pres.setDate(3, java.sql.Date.valueOf(checkout_date));
+
+            ResultSet rs = pres.executeQuery();
+
+            if (rs.next()) {
+                minAvailableQuantity = rs.getInt("min_available_quantity");
+            }
+
+            /** 紀錄真實執行的SQL指令，並印出 **/
+            exexcute_sql = pres.toString();
+            System.out.println(exexcute_sql);
+
+        } catch (SQLException e) {
+            /** 印出JDBC SQL指令錯誤 **/
+            System.err.format("SQL State: %s\n%s\n%s", e.getErrorCode(), e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            /** 若錯誤則印出錯誤訊息 */
+            e.printStackTrace();
+        } finally {
+            /** 關閉連線並釋放所有資料庫相關之資源 **/
+            DBMgr.close(pres, conn);
+        }
+
+        return minAvailableQuantity;
     }
 }
