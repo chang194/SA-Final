@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--差112行AJAX讀取資料庫-->
 
 <head>
     <meta charset="UTF-8">
@@ -50,32 +49,33 @@
                 <form>
                     <div class="form-group row-gap">
                         <label for="email">帳號</label>
-                        <input type="text" class="form-control" id="email" placeholder="Enter email">
+                        <input type="String" class="form-control" id="email" placeholder="Enter email" required>
                     </div>
                     <div class="form-group row-gap">
                         <label for="username">使用者名稱</label>
-                        <input type="text" class="form-control" id="username" placeholder="Enter username">
-                    </div>
-                    <div class="form-group row-gap">
-                        <label for="dob">生日</label>
-                        <input type="date" class="form-control" id="dob">
-                    </div>
-                    <div class="form-group row-gap">
-                        <label for="bio">簡介</label>
-                        <textarea class="form-control" id="bio" rows="3"
-                            placeholder="A short bio about yourself"></textarea>
+                        <input type="String" class="form-control" id="username" placeholder="Enter username" required>
                     </div>
                     <div class="form-group row-gap">
                         <label for="password">密碼</label>
-                        <input type="password" class="form-control" id="password" placeholder="Enter password">
+                        <input type="String" class="form-control" id="password" placeholder="Enter password" required>
                     </div>
                     <div class="form-group row-gap">
                         <label for="confirmPassword">確認密碼</label>
-                        <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm password">
+                        <input type="String" class="form-control" id="confirmPassword" placeholder="Confirm password"
+                            required>
+                    </div>
+                    <div class="form-group row-gap">
+                        <label for="bth">生日</label>
+                        <input type="date" class="form-control" id="bth" required>
+                    </div>
+                    <div class="form-group row-gap">
+                        <label for="intro">簡介</label>
+                        <textarea type="String" class="form-control" id="intro" rows="3"
+                            placeholder="A short bio about yourself"></textarea>
                     </div>
                     <div class="form-group row-gap">
                         <label for="userType">選擇身份</label>
-                        <select class="form-select" id="userType">
+                        <select class="form-select" id="userType" required>
                             <option selected disabled>Select</option>
                             <option value="customer">房客</option>
                             <option value="hotelowner">住宿業者</option>
@@ -92,49 +92,77 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./login.js"></script>
     <script>
-        document.querySelector('form').addEventListener('submit', function (event) {
-            event.preventDefault(); // 阻止表單預設提交行為
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('form').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
 
-            var email = document.getElementById('email').value;
-            var username = document.getElementById('username').value;
-            var password = document.getElementById('password').value;
-            var confirmPassword = document.getElementById('confirmPassword').value;
-            var userType = document.getElementById('userType').value;
+                var email = document.getElementById('email').value;
+                var username = document.getElementById('username').value;
+                var password = document.getElementById('password').value;
+                var confirmPassword = document.getElementById('confirmPassword').value;
+                var userType = document.getElementById('userType').value;
+                var bth = document.getElementById('bth').value;
+                var intro = document.getElementById('bth').value;
 
-            // 驗證電子郵件格式
-            if (!validateEmail(email)) {
-                alert('請輸入有效的電子郵件地址');
-                return false;
-            }
+                if (!validateEmail(email)) {
+                    alert('請請輸入有效的電子郵件！');
+                    return false;
+                }
 
-            // 驗證密碼與確認密碼是否相符
-            if (password !== confirmPassword) {
-                alert('密碼與確認密碼不相符');
-                return false;
-            }
+                // Validate password match
+                if (password !== confirmPassword) {
+                    alert('密碼與確認密碼不相符');
+                    return false;
+                }
 
-            // 確認是否選擇了身份
-            if (userType === 'Select') {
-                alert('請選擇身份');
-                return false;
-            }
+                // Validate userType selection
+                if (userType === 'Select') {
+                    alert('請選擇身份');
+                    return false;
+                }
 
-            // TODO: 在這裡可以使用 AJAX 或其他方法將資料發送到後端進行註冊處理
+                // Data to be sent to the backend
+                var registrationData = {
+                    email: email,
+                    username: username,
+                    password: password,
+                    confirmPassword: confirmPassword,
 
-            // 註冊成功後進行頁面導向
-            if (userType === 'customer') {
-                window.location.href = 'login.html'; // 房客選擇時導向登入畫面
-            } else if (userType === 'hotelowner') {
-                window.location.href = 'createhotel.html'; // 住宿業者選擇時導向 createhotel.html
+                    userType: userType,
+                    // Include other fields here
+                };
+
+                fetch('YOUR_BACKEND_ENDPOINT_FOR_REGISTRATION', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(registrationData),
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok.');
+                        }
+                        alert('註冊成功！');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (userType === 'customer') {
+                            window.location.href = 'login.html';
+                        } else if (userType === 'hotelowner') {
+                            window.location.href = 'createhotel.html';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('錯誤！', error);
+                    });
+            });
+
+            function validateEmail(email) {
+                var re = /\S+@\S+\.\S+/;
+                return re.test(email);
             }
         });
-
-        // 驗證電子郵件格式的函數
-        function validateEmail(email) {
-            var re = /\S+@\S+\.\S+/;
-            return re.test(email);
-        }
-
 
     </script>
 </body>
