@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<!--結帳完還無法跳轉-->
 <head>
   <meta charset="UTF-8">
   <title>checkout</title>
@@ -9,41 +9,59 @@
   <link rel="stylesheet" href="navbar.css">
   <link rel="stylesheet" href="button.css">
   <style>
-    .row-gap {
-      margin-bottom: 20px;
+    /* General Styles */
+    body {
+      background-color: #a3bf9f;
+      color: #364f37;
+    }
+
+    .container {
+      padding: auto 15px;
+    }
+
+    h2,
+    h1,
+    p,
+    label {
+      margin-bottom: 10px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"] {
+      border-radius: 8px;
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+
+    input[type="number"],
+    .memberpoint {
+      border-radius: 15px;
+      border: 1px solid #ccc;
+      padding: 8px;
+      width: 80%;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      color: #364f37;
+      background-color: #fff;
+      margin-inline-start: 5px;
+      margin-bottom: 8px;
+    }
+
+    .custom-content {
+      border-radius: 15px;
+      background-color: #fff;
+      padding: 30px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .custom-section {
       margin-top: 50px;
-      margin-bottom: 30px;
-    }
-
-    .mb-3,
-    input[type="text"],
-    input[type="email"],
-    input[type="num"],
-    input[type="number"] {
-      border-radius: 30px;
-      padding: 5px;
-      width: 200px;
-    }
-
-    .row-eq-height {
-      display: flex;
-      flex-wrap: wrap;
-    }
-
-    .card {
-      border: none;
-      border-radius: 30px;
-      background-color: #364f37;
-      inline-size: 30px;
-      margin-bottom: 10px;
-      flex: 1;
-      color: #e0d6ce;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
+      margin-bottom: 50px;
     }
 
     .custom-button {
@@ -62,6 +80,7 @@
       color: #364f37;
     }
   </style>
+
 </head>
 
 <body>
@@ -99,85 +118,170 @@
   </nav>
 
   <div class="container text-center custom-section">
-    <div class="row row-eq-height">
-      <div class="col-6 d-flex align-items-stretch">
-        <div class="card w-100 d-flex justify-content-center align-items-center">
+    <div class="row">
+      <div class="col-12 col-md-6">
+        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
           <div>
             <h2>Hotel name</h2>
+            <hr>
             <p>Hotel address</p>
+            <p>hotel info：</p>
           </div>
         </div>
       </div>
-      <div class="col-6 d-flex align-items-center justify-content-center">
-        <div class="card w-100 d-flex justify-content-center align-items-center">
+      <div class="col-12 col-md-6">
+        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
+          <div>
+            <h2>Room name</h2>
+            <hr>
+            <p>Room info</p>
+            <label for="creditcard">請選擇房間數量：
+              <input type="number" name="roomrum" id="roomnum" min="1" max="roomavaliable">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container text-center custom-section">
+    <div class="row">
+      <div class="col-4 d-flex align-items-stretch">
+        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
           <form>
-            <div class="mb-3 text-center">
+            <div class="mb-1 text-center">
               <label for="username" class="form-label">訂房者</label>
               <input type="text" class="form-control" id="username" placeholder="輸入訂房者名稱">
             </div>
-            <div class="mb-3 text-center">
+            <div class="mb-1 text-center">
               <label for="c-email" class="form-label">電子郵件</label>
               <input type="email" class="form-control" id="c-email" placeholder="輸入電子郵件">
             </div>
           </form>
         </div>
       </div>
-
-      <div class="container text-center custom-section">
-        <div class="row row-eq-height">
-          <div class="col-4 d-flex align-items-stretch">
-            <div class="card w-100 d-flex justify-content-center align-items-center">
-              <form>
-                <label for="checkin">入住日期
-                  <input type="date" name="checkin" id="checkin">
-                </label><br><br>
-                <label for="checkout">退房日期
-                  <input type="date" name="checkout" id="checkout">
-                </label>
-              </form>
+      <div class="col-4 d-flex align-items-center justify-content-center">
+        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
+          <form>
+            <div class="mb-1 text-center">
+              <label for="checkin">入住日期
+                <input type="date" name="checkin" id="checkin">
+              </label>
             </div>
+            <hr>
+            <div class="mb-1 text-center">
+              <label for="checkout">退房日期
+                <input type="date" name="checkout" id="checkout">
+              </label>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-4 d-flex align-items-center justify-content-center">
+        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
+          <div>
+            <h2>信用卡資訊</h2>
+            <label for="card-number" class="form-label">信用卡卡號：</label>
+            <input type="text" class="form-control" id="card-number" placeholder="請輸入信用卡卡號">
           </div>
-          <div class="col-8 d-flex align-items-center justify-content-center">
-            <div class="card w-100 d-flex justify-content-center align-items-center">
-              <div>
-                <h2>Room name</h2>
-                <p>Room info</p>
-              </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="container text-center custom-section">
+    <div class="row">
+      <div class="col-4 d-flex align-items-stretch">
+        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
+          <div>
+            <h1>Total Price</h1>
+            <hr>
+            <h2>$20000</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-4 d-flex align-items-center justify-content-center">
+        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
+          <div>
+            <h1>會員點數</h1>
+            <div class="memberpoint align-items-center" readonly>100</div>
+            <div>
+              <button class="btn align-items-center">全部使用</button>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="container text-center custom-section">
-        <div class="row row-eq-height">
-          <div class="col-4 d-flex align-items-stretch">
-            <div class="card w-100 d-flex justify-content-center align-items-center">
-              <h1>Total Price</h1>
-              <h2>$200000</h2>
-            </div>
-          </div>
-          <div class="col-4 d-flex align-items-center justify-content-center">
-            <div class="card w-100 d-flex justify-content-center align-items-center">
-              <div>
-                <h1>會員點數</h1>
-                <label for="memberpoint">
-                  <input type="number" name="memberpoint" id="memberpoint">
-                </label>
-              </div>
-            </div>
-          </div>
-          <div class="col-4 d-flex align-items-center justify-content-center">
-            <div class="w-100 d-flex justify-content-center align-items-center">
-              <div>
-                <button class="custom-button">結帳</button>
-              </div>
-            </div>
+
+      <div class="col-4 d-flex align-items-center justify-content-center">
+        <div class="w-100 d-flex justify-content-center align-items-center">
+          <div>
+            <button id="checkoutButton" class="custom-button" href="ord">結帳</button>
           </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-      <script src="./login.js"></script>
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="successModalLabel">下訂單成功</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          訂單已完成！
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確認</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="./login.js"></script>
+  <script>
+    function displayModal(title, message, redirectTo) {
+      const modalTitle = document.getElementById('commonModalLabel');
+      const modalBody = document.getElementById('commonModalBody');
+
+      modalTitle.innerText = title;
+      modalBody.innerText = message;
+
+      const commonModal = new bootstrap.Modal(document.getElementById('commonModal'));
+      commonModal.show();
+
+      // Redirect after a delay (2 seconds in this case)
+      setTimeout(function () {
+        redirectToOrderDetail(directTo);
+      }, 2000);
+    }
+
+    function redirectToOrderDetail(redirectTo) {
+      window.location.href = redirectTo;
+    }
+    const checkoutButton = document.getElementById('checkoutButton');
+    checkoutButton.addEventListener('click', function () {
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('c-email').value;
+      const checkinDate = document.getElementById('checkin').value;
+      const checkoutDate = document.getElementById('checkout').value;
+      const cardNumber = document.getElementById('card-number').value;
+
+      if (username && email && checkinDate && checkoutDate && cardNumber) {
+        const myModal = new bootstrap.Modal(document.getElementById('successModal'));
+        myModal.show();
+      } else {
+        alert('請填寫完所有資料後再進行結帳！');
+      }
+    });
+
+  </script>
 </body>
 
 </html>
