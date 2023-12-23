@@ -377,4 +377,196 @@ public class CustomerHelper {
         return resultCode;
     }
 
+    /**
+     * 追蹤其他使用者
+     *
+     * @param follower_id 追蹤者的customer_id
+     * @param customer_Id 被追蹤者的custome_id
+     * @return the JSONObject 回傳SQL指令執行結果與執行之資料
+     */
+    public JSONObject follow(int follower_id, int customer_id){
+        /** 紀錄回傳之資料 */
+        JSONArray jsa = new JSONArray();
+        /** 記錄實際執行之SQL指令 */
+        String exexcute_sql = "";
+        /** 紀錄程式開始執行時間 */
+        long start_time = System.nanoTime();
+        /** 紀錄SQL總行數 */
+        int row = 0;
+
+        try {
+            /** 取得資料庫之連線 */
+            conn = DBMgr.getConnection();
+            /** SQL指令 */
+            String sql = "INSERT INTO `mydb`.`tbl_Customer`(`follower_id`, `customer_id`) VALUES (?, ?)";
+            
+            /** 將參數回填至SQL指令當中 */
+            pres = conn.prepareStatement(sql);
+            pres.setInt(1, follower_id);
+            pres.setInt(2, customer_id);
+            
+            /** 執行更新之SQL指令並記錄影響之行數 */
+            row = pres.executeUpdate();
+
+            /** 紀錄真實執行的SQL指令，並印出 **/
+            exexcute_sql = pres.toString();
+            System.out.println(exexcute_sql);
+
+        } catch (SQLException e) {
+            /** 印出JDBC SQL指令錯誤 **/
+            System.err.format("SQL State: %s\n%s\n%s", e.getErrorCode(), e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            /** 若錯誤則印出錯誤訊息 */
+            e.printStackTrace();
+        } finally {
+            /** 關閉連線並釋放所有資料庫相關之資源 **/
+            DBMgr.close(pres, conn);
+        }
+        
+        /** 紀錄程式結束執行時間 */
+        long end_time = System.nanoTime();
+        /** 紀錄程式執行時間 */
+        long duration = (end_time - start_time);
+        
+        /** 將SQL指令、花費時間與影響行數，封裝成JSONObject回傳 */
+        JSONObject response = new JSONObject();
+        response.put("sql", exexcute_sql);
+        response.put("row", row);
+        response.put("time", duration);
+        response.put("data", jsa);
+
+        return response;
+    }
+
+    /**
+     * 新增一個旅程或社群至喜愛清單
+     *
+     * @param customer_id 使用者的customer_id
+     * @param journey_id 若要新增旅程則為journey_id，否則為-1
+     * @param community_id 若要新增社群則為community_id，否則為-1
+     * @return the JSONObject 回傳SQL指令執行結果與執行之資料
+     */
+    public JSONObject addFavorite(int customer_id, int journey_id, int community_id){
+        /** 記錄實際執行之SQL指令 */
+        String exexcute_sql = "";
+        /** 紀錄程式開始執行時間 */
+        long start_time = System.nanoTime();
+        /** 紀錄SQL總行數 */
+        int row = 0;
+        
+        try {
+            /** 取得資料庫之連線 */
+            conn = DBMgr.getConnection();
+            /** SQL指令 */
+            String sql = "INSERT INTO `mydb`.`tbl_FavoriteList` (`customer_id`, `journey_id`, `community_id`) VALUES (?, ?, ?)";
+            
+            /** 將參數回填至SQL指令當中 */
+            pres = conn.prepareStatement(sql);
+            pres.setInt(1, customer_id);
+            pres.setInt(2, journey_id);
+            pres.setInt(3, community_id);
+            
+            
+            /** 執行新增之SQL指令並記錄影響之行數 */
+            row = pres.executeUpdate();
+            
+            /** 紀錄真實執行的SQL指令，並印出 **/
+            exexcute_sql = pres.toString();
+            System.out.println(exexcute_sql);
+
+        } catch (SQLException e) {
+            /** 印出JDBC SQL指令錯誤 **/
+            System.err.format("SQL State: %s\n%s\n%s", e.getErrorCode(), e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            /** 若錯誤則印出錯誤訊息 */
+            e.printStackTrace();
+        } finally {
+            /** 關閉連線並釋放所有資料庫相關之資源 **/
+            DBMgr.close(pres, conn);
+        }
+
+        /** 紀錄程式結束執行時間 */
+        long end_time = System.nanoTime();
+        /** 紀錄程式執行時間 */
+        long duration = (end_time - start_time);
+
+        /** 將SQL指令、花費時間與影響行數，封裝成JSONObject回傳 */
+        JSONObject response = new JSONObject();
+        response.put("sql", exexcute_sql);
+        response.put("time", duration);
+        response.put("row", row);
+
+        return response;
+    }
+
+    /**
+     * 從喜愛清單刪除一個旅程或社群
+     *
+     * @param customer_id 使用者的customer_id
+     * @param journey_id 若要刪除旅程則為journey_id，否則為-1
+     * @param community_id 若要刪除社群則為community_id，否則為-1
+     * @return the JSONObject 回傳SQL指令執行結果與執行之資料
+     */
+    public JSONObject deleteFavorite(int customer_id, int journey_id, int community_id){
+        /** 記錄實際執行之SQL指令 */
+        String exexcute_sql = "";
+        /** 紀錄程式開始執行時間 */
+        long start_time = System.nanoTime();
+        /** 紀錄SQL總行數 */
+        int row = 0;
+        
+        try {
+            /** 取得資料庫之連線 */
+            conn = DBMgr.getConnection();
+            /** SQL指令 */
+            String sql = "DELETE FROM `mydb`.`tbl_FavoriteList` WHERE `customer_id` = ? AND ";
+            
+            if (journey_id != -1) {
+                sql += "`journey_id` = ?";
+            } else if (community_id != -1) {
+                sql += "`community_id` = ?";
+            } else {
+                // 如果 journey_id 和 community_id 同時為 -1，表示未指定要刪除的是旅程還是社群
+                JSONObject response = new JSONObject();
+                response.put("status", "fail");
+                response.put("message", "Please specify either journey_id or community_id for deletion.");
+                return response;
+            }
+
+            /** 將參數回填至SQL指令當中 */
+            pres = conn.prepareStatement(sql);
+            pres.setInt(1, customer_id);
+            pres.setInt(2, journey_id != -1 ? journey_id : community_id);
+            
+            /** 執行新增之SQL指令並記錄影響之行數 */
+            row = pres.executeUpdate();
+            
+            /** 紀錄真實執行的SQL指令，並印出 **/
+            exexcute_sql = pres.toString();
+            System.out.println(exexcute_sql);
+
+        } catch (SQLException e) {
+            /** 印出JDBC SQL指令錯誤 **/
+            System.err.format("SQL State: %s\n%s\n%s", e.getErrorCode(), e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            /** 若錯誤則印出錯誤訊息 */
+            e.printStackTrace();
+        } finally {
+            /** 關閉連線並釋放所有資料庫相關之資源 **/
+            DBMgr.close(pres, conn);
+        }
+
+        /** 紀錄程式結束執行時間 */
+        long end_time = System.nanoTime();
+        /** 紀錄程式執行時間 */
+        long duration = (end_time - start_time);
+
+        /** 將SQL指令、花費時間與影響行數，封裝成JSONObject回傳 */
+        JSONObject response = new JSONObject();
+        response.put("sql", exexcute_sql);
+        response.put("time", duration);
+        response.put("row", row);
+
+        return response;
+    }
 }
