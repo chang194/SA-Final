@@ -57,7 +57,7 @@ public class CustomerHelper {
      * @return the JSON object 回傳SQL執行結果與該會員編號之會員資料
      */
     public JSONObject getByID(int id) {
-        /** 新建一個 Customer 物件之 m 變數，用於紀錄每一位查詢回之會員資料 */
+        /** 新建一個 Customer 物件之 cus 變數，用於紀錄每一位查詢回之會員資料 */
         Customer cus = null;
         /** 用於儲存所有檢索回之會員，以JSONArray方式儲存 */
         JSONArray jsa = new JSONArray();
@@ -328,7 +328,7 @@ public class CustomerHelper {
      *
      * @param email 使用者輸入的email (String)
      * @param password 使用者輸入的password (String)
-     * @return int 若登入成功則回傳Customer_id，若查無此帳號則回傳-1，若密碼錯誤則回傳-2
+     * @return int 若登入成功則回傳customer_id，若查無此帳號則回傳-1，若密碼錯誤則回傳-2
      */
     public int login(String email, String password){
         /** 儲存JDBC檢索資料庫後回傳之結果，以 pointer 方式移動到下一筆資料 */
@@ -340,7 +340,7 @@ public class CustomerHelper {
             /** 取得資料庫之連線 */
             conn = DBMgr.getConnection();
             /** SQL指令 */
-            String sql = "SELECT customer_id, password FROM `mydb`.`tbl_Customer` WHERE email = ?";
+            String sql = "SELECT customer_id, customer_password FROM `mydb`.`tbl_Customer` WHERE customer_email = ?";
 
             /** 將參數回填至SQL指令當中 */
             pres = conn.prepareStatement(sql);
@@ -350,7 +350,7 @@ public class CustomerHelper {
             rs = pres.executeQuery(); 
                 if (rs.next()) {
                     // 如果有符合條件的資料，比對密碼
-                    String storedPassword = rs.getString("password");
+                    String storedPassword = rs.getString("customer_password");
                     if (password.equals(storedPassword)) {
                         // 登入成功，回傳 customer_id
                         resultCode = rs.getInt("customer_id");
