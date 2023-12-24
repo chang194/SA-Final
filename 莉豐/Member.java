@@ -1,45 +1,32 @@
 package app;
-
-import java.time.LocalDate;
 import java.util.Date;
+import java.time.LocalDate;
 import org.json.*;
 
 public abstract class Member {
 	private String name;
 	private String email;
 	private String password;
-	private LocalDate birthday;
+	private LocalDate birthday; //å°‡ç”Ÿæ—¥çš„è³‡æ–™å‹æ…‹æ”¹ç‚ºLocalDate
 	private String intro;
-	private Date modified_time;//¬ö¿ı·|­û³Ì«á§ó·s¸ê®Æªº®É¶¡
+	private Date modified_time; //ç´€éŒ„æœƒå“¡æœ€å¾Œä¸€æ¬¡æ›´æ–°çš„æ™‚é–“
 	
-	/**
-     * ¹ê¨Ò¤Æ¡]Instantiates¡^¤@­Ó·sªº¡]new¡^Memberª«¥ó<br>
-     * ±Ä¥Î¦h¸ü¡]overload¡^¤èªk¶i¦æ¡A¦¹«Øºc¤l¥Î©ó«Ø¥ß·|­û¸ê®Æ®É¡A²£¥Í¤@¦W·sªº·|­û
-     *
-	 * @param birthday ·|­û¥Í¤é
-     * @param email ·|­û¹q¤l«H½c
-     * @param password ·|­û±K½X
-     * @param name ·|­û©m¦W
-	 * @param intro ·|­ûÂ²¤¶
-     */
-	public Member(String name,String email,String password,LocalDate birthday,String intro) {
+	//ä¿®æ”¹
+	public Member(String name,String password,LocalDate birthday,String intro) {
 		this.name = name;
-		this.email = email;
 		this.password = password;
 		this.birthday = birthday;
 		this.intro = intro;
 	}
-	/**
-     * ¹ê¨Ò¤Æ¡]Instantiates¡^¤@­Ó·sªº¡]new¡^Memberª«¥ó<br>
-     * ±Ä¥Î¦h¸ü¡]overload¡^¤èªk¶i¦æ¡A¦¹«Øºc¤l¥Î©ó¬d¸ß·|­û¸ê®Æ®É¡AÀËµø¤@¦W·|­ûªº¸Ô²Ó¸ê®Æ
-     *
-	 * @param birthday ·|­û¥Í¤é
-     * @param email ·|­û¹q¤l«H½c
-     * @param password ·|­û±K½X
-     * @param name ·|­û©m¦W
-	 * @param intro ·|­ûÂ²¤¶
-	 * @param modified_time ·|­û­×§ï¸ê®Æ®É¶¡
-     */
+	
+	//è¨»å†Š
+	public Member(String name,String email, String password,LocalDate birthday,String intro) {
+		this.name = name;
+		this.password = password;
+		this.birthday = birthday;
+		this.intro = intro;
+	}
+	//æŸ¥è©¢
 	public Member(String name,String email,String password,LocalDate birthday,String intro,Date modified_time) {
 		this.name = name;
 		this.email = email;
@@ -67,11 +54,7 @@ public abstract class Member {
 		return modified_time;
 	}
 	
-	/**
-     * ¨ú±o¸Ó¦W·|­û©Ò¦³¸ê®Æ
-     *
-     * @return the data ¨ú±o¸Ó¦W·|­û¤§©Ò¦³¸ê®Æ¨Ã«Ê¸Ë©óJSONObjectª«¥ó¤º
-     */
+	//å–å¾—ä¸€å€‹æœƒå“¡çš„è³‡æ–™
 	public JSONObject getData() {
 		JSONObject jso = new JSONObject();
 		jso.put("name", getName());
@@ -79,6 +62,7 @@ public abstract class Member {
 		jso.put("password", getPassword());
 		jso.put("birthday",getBirthday());
 		jso.put("Introduction", getIntro());
+		jso.put("modified_time", getModified_time());
 		return jso;
 	}
 }
