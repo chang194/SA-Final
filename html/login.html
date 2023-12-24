@@ -68,7 +68,7 @@
                         <input type="String" class="form-control" id="password" placeholder="Enter password">
                     </div>
                     <div class="d-grid gap-2 col-3 mx-auto">
-                        <button type="submit" class="btn btn-primary mb-3" onclick="login()">登入</button>
+                        <button type="submit" id="submitBtn" class="btn btn-primary mb-3">登入</button>
                         <a href="register.html" class="btn btn-secondary mb-3">註冊</a>
                     </div>
                 </form>
@@ -77,8 +77,13 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./login.js"></script>
     <script>
-        function login() {
+        document.addEventListener('DOMContentLoaded', function () {
+        	var submitBtn = document.getElementById('submitBtn');
+        	submitBtn.addEventListener('click', function (event) {
+            	event.preventDefault();
+            var id = -1;
             var email = document.getElementById('email').value;
             var password = document.getElementById('password').value;
 
@@ -87,17 +92,21 @@
                 return;
             }
 
-            const loginData = {
+            var loginData = {
+                id: id,
                 email: email,
                 password: password
             };
 
-            fetch('api/customer.do', {
-                method: 'POST',
+            const queryString = Object.keys(loginData).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(loginData[key])}`).join('&');
+
+            const url = `api/customer.do?${queryString}`;
+
+            fetch(url, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(loginData),
             })
                 .then(response => {
                     if (!response.ok) {
@@ -107,27 +116,26 @@
                 })
                 .then(data => {
                     console.log('Response from server:', data);
-                    if (data.success) {
-                        var userType = data.userType;
-                        alert('登入成功！');
-                        if (userType === 'customer') {
-                            window.location.href = 'index.html'; // 導向房客頁面
-                        } else if (userType === 'hotelowner') {
+                        if (data.status === '200') {
+                            alert('登入成功！');
+                            if (data.usertype === 1){
+                            	window.location.href = 'index.html'; // 導向房客頁面
+                            	console.log('房客登入成功');
+                        	} else {
+                            alert('登入成功！');
                             window.location.href = 'hotelowner.html'; // 導向住宿業者頁面
+                            }
+                            
                         } else {
                             alert('登入失敗');
                             window.location.href = 'login.html';
                         }
-                    } else {
-                        alert('登入失敗：' + data.message);
-                    }
-
                 })
                 .catch(error => {
-                    console.error('錯誤！', error);
                     alert('登入失敗：請稍後再試');
                 });
-        }
+            }); 
+        });
 
     </script>
 </body>
