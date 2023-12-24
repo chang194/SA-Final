@@ -1,54 +1,23 @@
 package app;
-
 import java.time.LocalDate;
 import java.util.Date;
+
+import org.json.JSONObject;
 
 public class Customer extends Member{
 	private int customer_id;
 	private int customer_point;
-	/**
-     * ¹ê¨Ò¤Æ¡]Instantiates¡^¤@­Ó·sªº¡]new¡^Customerª«¥ó<br>
-     * ±Ä¥Î¦h¸ü¡]overload¡^¤èªk¶i¦æ¡A¦¹«Øºc¤l¥Î©ó«Ø¥ß·|­û¸ê®Æ®É¡A²£¥Í¤@¦W·sªº·|­û
-     *
-	 * @param birthday ÅU«È¥Í¤é
-     * @param email ÅU«È¹q¤l«H½c
-     * @param password ÅU«È±K½X
-     * @param name ÅU«È©m¦W
-	 * @param intro ÅU«ÈÂ²¤¶
-     */
+	//register
 	public Customer(String name,String email,String password,LocalDate birthday,String intro) {
 		super(name,email,password,birthday,intro);
-		this.customer_point = 0; //¦bµù¥U®É±N·|­ûÂI¼Æ³]¬°0
+		this.customer_point = 0; //åœ¨è¨»å†Šæ™‚å°‡æœƒå“¡é»æ•¸è¨­ç‚º0
 	}
-	/**
-     * ¹ê¨Ò¤Æ¡]Instantiates¡^¤@­Ó·sªº¡]new¡^Customerª«¥ó<br>
-     * ±Ä¥Î¦h¸ü¡]overload¡^¤èªk¶i¦æ¡A¦¹«Øºc¤l¥Î©ó­×§ï·|­û¸ê®Æ®É¡A­×§ï·|­ûªº¸ê°T
-     *
-	 * @param customer_id ÅU«Èid
-	 * @param birthday ÅU«È¥Í¤é
-     * @param email ÅU«È¹q¤l«H½c
-     * @param password ÅU«È±K½X
-     * @param name ÅU«È©m¦W
-	 * @param intro ÅU«ÈÂ²¤¶
-	 * @param modified_time ÅU«È³Ì«á¤@¦¸§ó·s¸ê®Æ®É¶¡
-     */
-	public Customer(int customer_id,String name,String email,String password,LocalDate birthday,String intro,Date modified_time){
-		super(name,email,password,birthday,intro,modified_time);
+	//revise
+	public Customer(int customer_id,String name,String password,LocalDate birthday,String intro){
+		super(name,password,birthday,intro);
 		this.customer_id = customer_id;
 	}
-	/**
-     * ¹ê¨Ò¤Æ¡]Instantiates¡^¤@­Ó·sªº¡]new¡^Customerª«¥ó<br>
-     * ±Ä¥Î¦h¸ü¡]overload¡^¤èªk¶i¦æ¡A¦¹«Øºc¤l¥Î©ó¬d¸ß·|­û¸ê®Æ®É¡AÀËµø·|­û¸Ô²Ó¸ê®Æ
-     *
-	 * @param customer_id ÅU«Èid
-	 * @param birthday ÅU«È¥Í¤é
-     * @param email ÅU«È¹q¤l«H½c
-     * @param password ÅU«È±K½X
-     * @param name ÅU«È©m¦W
-	 * @param intro ÅU«ÈÂ²¤¶
-	 * @param customer_point ·|­ûÂI¼Æ
-	 * @param modified_time ÅU«È³Ì«á¤@¦¸§ó·s¸ê®Æ®É¶¡
-     */
+	//getdata
 	public Customer(int customer_id,String name,String email,String password,LocalDate birthday,String intro,int customer_point,Date modified_time){
 		super(name,email,password,birthday,intro,modified_time);
 		this.customer_id = customer_id;
@@ -59,5 +28,14 @@ public class Customer extends Member{
 	}
 	public int getCustomer_point(){
 		return customer_point;
+	}
+
+	public JSONObject getData(){
+		JSONObject jso = super.getData(); // ä½¿ç”¨çˆ¶é¡åˆ¥çš„ getData() å–å¾—åŸºæœ¬è³‡æ–™
+
+        // åŠ å…¥é¡å¤–çš„è³‡æ–™
+        jso.put("customer_point", getCustomer_point());
+
+        return jso;
 	}
 }
