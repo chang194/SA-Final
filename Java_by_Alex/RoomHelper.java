@@ -104,6 +104,77 @@ public class RoomHelper {
     }
     
     /**
+     * 透過hotel_id取得房型資料
+     *
+     * @param id hotel_id
+     * @return the JSON object 回傳SQL執行結果與該hotel_id之房型資料
+     */
+    public JSONObject getByHotelID(int id) {
+        /** 新建一個 Room 物件之 Room 變數，用於紀錄每一位查詢回之房型資料 */
+        Room room = null;
+        /** 用於儲存所有檢索回之房型，以JSONArray方式儲存 */
+        JSONArray jsa = new JSONArray();
+        /** 記錄實際執行之SQL指令 */
+        String exexcute_sql = "";
+        /** 紀錄程式開始執行時間 */
+        long start_time = System.nanoTime();
+        /** 紀錄SQL總行數 */
+        int row = 0;
+        /** 儲存JDBC檢索資料庫後回傳之結果，以 pointer 方式移動到下一筆資料 */
+        ResultSet rs = null;
+
+        try {
+            /** 取得資料庫之連線 */
+            conn = DBMgr.getConnection();
+            /** SQL指令 */
+            String sql = "SELECT room_id FROM `mydb`.`tbl_Room` WHERE hotel_id = ?";
+            
+            // 使用 PreparedStatement 預防 SQL 注入
+            pres = conn.prepareStatement(sql);
+            pres.setInt(1, id);
+
+            // 執行查詢
+            ResultSet resultSet = pres.executeQuery();
+
+            // 逐一處理查詢結果
+            while (resultSet.next()) {
+                int room_id = resultSet.getInt("room_id");
+
+                // 使用 getByID 方法取得房型資料
+                JSONObject roomData = getByID(room_id);
+
+                // 將房型資料放入結果 JSON 物件
+                jsa.put(roomData);
+            }
+
+        } catch (SQLException e) {
+            /** 印出JDBC SQL指令錯誤 **/
+            System.err.format("SQL State: %s\n%s\n%s", e.getErrorCode(), e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            /** 若錯誤則印出錯誤訊息 */
+            e.printStackTrace();
+        } finally {
+            /** 關閉連線並釋放所有資料庫相關之資源 **/
+            DBMgr.close(rs, pres, conn);
+        }
+        
+        /** 紀錄程式結束執行時間 */
+        long end_time = System.nanoTime();
+        /** 紀錄程式執行時間 */
+        long duration = (end_time - start_time);
+        
+        /** 將SQL指令、花費時間、影響行數與所有房型資料之JSONArray，封裝成JSONObject回傳 */
+        JSONObject response = new JSONObject();
+        response.put("sql", exexcute_sql);
+        response.put("row", row);
+        response.put("time", duration);
+        response.put("data", jsa);
+
+        return response;
+         
+    }
+
+    /**
      * 建立該房型至資料庫
      *
      * @param room 一個房型之Room物件
