@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Modify Hotel Information</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="../css/button.css">
+    <script src="../js/login.js"></script>
+    <style>
+        .row-gap {
+            margin-bottom: 20px;
+        }
+
+        .custom-section {
+            margin-top: 120px;
+            margin-bottom: 120px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar bg-white navbar-white p-3 navbar-expand-lg">
+        <div class="container">
+            <a href="hotelowner.html" class="navbar-brand">
+                <img src="../pic/LOGO.png" alt="logo">
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="edithotel.html" class="nav-link">修改旅店資料</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="../pic/會員.png" alt="會員圖標">
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1>修改旅店資料</h1>
+        <form action="/update_hotel" method="post" enctype="multipart/form-data">
+            <!-- 表单内容 -->
+
+            <button type="button" class="btn btn-success" id="confirmedit">確認修改</button>
+            <a href="hotelowner.html" class="btn btn-primary" id="backButton">回到房型管理介面</a>
+        </form>
+    </div>
+
+    <!-- 模态框内容 -->
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">修改成功</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    旅店資訊修改成功！
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確認</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./login.js"></script>
+
+    <script>
+        // 当点击确认修改按钮时触发模态框显示
+        const confirmEditButton = document.getElementById('confirmedit');
+        confirmEditButton.addEventListener('click', function () {
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<!--登入判斷身份還沒寫，判斷完分別連到index.html跟hotelowner.html，寫在下面最後再確認-->
+
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="../css/button.css">
+    <script src="../js/login.js"></script>
+    <style>
+        .custom-section {
+            margin-top: 150px;
+            margin-bottom: 150px;
+        }
+
+        .row-gap {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar bg-white navbar-white p-1 navbar-expand-lg">
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <img src="../pic/LOGO.png" alt="logo">
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="" class="nav-link">旅遊社群</a>
+                    </li>
+                    <li class="nav-item" id="myOrdersNavItem" style="display: none;">
+                        <a href="myorder.html" class="nav-link">我的訂單</a>
+                    </li>
+                    <li class="nav-item" id="shoppingCartNavItem" style="display: none;">
+                        <a href="shoppingcart.html" class="nav-link">購物車</a>
+                </ul>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="../pic/會員.png" alt="會員圖標">
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                        ${isLoggedIn ?
+                        `<li><a class="dropdown-item" href="member.html">會員資料</a></li>
+                        <li><button class="dropdown-item" onclick="logout()">登出</button></li>` :
+                        `<li><a class="dropdown-item" href="login.html">登入</a></li>`}
+                    </ul>
+                </div>
+                </ul>
+            </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center custom-section">
+            <div class="col-md-6">
+                <h1 class="mb-4 text-center">登入</h1>
+                <form class="api/customer.do" id="loginForm" onsubmit="return false;">
+                    <div class="form-group row-gap">
+                        <label for="username">帳號</label>
+                        <input type="text" class="form-control" id="email" placeholder="Enter email">
+                    </div>
+                    <div class="form-group row-gap">
+                        <label for="password">密碼</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter password">
+                    </div>
+                    <div class="d-grid gap-2 col-3 mx-auto">
+                        <button type="submit" class="btn btn-primary mb-3" onclick="login()">登入</button>
+                        <a href="register.html" class="btn btn-secondary mb-3">註冊</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="./login.js"></script>
+    <script>
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                alert('請輸入帳號和密碼！');
+                return;
+            }
+
+            const loginData = {
+                email: email,
+                password: password
+            };
+
+            fetch('api/customer.do', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(loginData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (success) {
+                        console.log('Response from server:', data);
+                        alert('登入成功！');
+                        if (userType === 'customer') {
+                            window.location.href = 'index.html'; // 導向房客頁面
+                        } else if (userType === 'hotelowner') {
+                            window.location.href = 'hotelowner.html'; // 導向住宿業者頁面
+                        } else {
+                            alert('登入失敗');
+                            window.location.href = 'login.html';
+                        }
+                    } else {
+                        alert('登入失敗：' + data.message);
+                    }
+
+                })
+                .catch(error => {
+                    console.error('錯誤！', error);
+                    alert('登入失敗：請稍後再試');
+                });
+        }
+
+    </script>
+</body>
+
+</html>
