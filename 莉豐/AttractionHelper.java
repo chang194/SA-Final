@@ -8,7 +8,7 @@ import util.DBMgr;
 /**
  * <p>
  * The Class AttractionHelper<br>
- * AttractionHelperÃş§O¡]class¡^¥D­nºŞ²z©Ò¦³»Pattrction¬ÛÃö»P¸ê®Æ®w¤§¤èªk
+ * AttractionHelperé¡åˆ¥ï¼ˆclassï¼‰ä¸»è¦ç®¡ç†æ‰€æœ‰èˆ‡attrctionç›¸é—œèˆ‡è³‡æ–™åº«ä¹‹æ–¹æ³•
  * </p>
  * 
  * @author Winnie
@@ -17,24 +17,24 @@ import util.DBMgr;
  */
 
 public class AttractionHelper {
-    //ÀRºAÅÜ¼Æ¡AÀx¦sAttractionHelperª«¥ó
+    //éœæ…‹è®Šæ•¸ï¼Œå„²å­˜AttractionHelperç‰©ä»¶
     private static AttractionHelper ah;
-    //Àx¦sJDBC¸ê®Æ®w³s½u
+    //å„²å­˜JDBCè³‡æ–™åº«é€£ç·š
     private Connection conn = null;
-    //Àx¦sJDBC¹w·Ç³Æ¤§SQL«ü¥O
+    //å„²å­˜JDBCé æº–å‚™ä¹‹SQLæŒ‡ä»¤
     private PreparedStatement pres = null;
     
     /**
-     * ¹ê¨Ò¤Æ¡]Instantiates¡^¤@­Ó·sªº¡]new¡^MemberHelperª«¥ó<br>
-     * ±Ä¥ÎSingleton¤£»İ­n³z¹Lnew
+     * å¯¦ä¾‹åŒ–ï¼ˆInstantiatesï¼‰ä¸€å€‹æ–°çš„ï¼ˆnewï¼‰MemberHelperç‰©ä»¶<br>
+     * æ¡ç”¨Singletonä¸éœ€è¦é€énew
      */
     private AttractionHelper(){}
 
     /**
-     * ÀRºA¤èªk<br>
-     * ¹ê§@Singleton¡]³æ¨Ò¼Ò¦¡¡^¡A¶È¤¹³\«Ø¥ß¤@­ÓAttractionHelperª«¥ó
+     * éœæ…‹æ–¹æ³•<br>
+     * å¯¦ä½œSingletonï¼ˆå–®ä¾‹æ¨¡å¼ï¼‰ï¼Œåƒ…å…è¨±å»ºç«‹ä¸€å€‹AttractionHelperç‰©ä»¶
      *
-     * @return the helper ¦^¶ÇAttractionHelperª«¥ó
+     * @return the helper å›å‚³AttractionHelperç‰©ä»¶
      */
     public static AttractionHelper getHelper(){
         if(ah == null){
@@ -44,40 +44,40 @@ public class AttractionHelper {
     }
 
     /**
-     * ³z¹L·|­û½s¸¹¡]ID¡^¨ú±o·|­û¸ê®Æ
+     * é€éæœƒå“¡ç·¨è™Ÿï¼ˆIDï¼‰å–å¾—æœƒå“¡è³‡æ–™
      *
-     * @param id ·|­û½s¸¹
-     * @return the JSON object ¦^¶ÇSQL°õ¦æµ²ªG»P¸Ó·|­û½s¸¹¤§·|­û¸ê®Æ
+     * @param id æœƒå“¡ç·¨è™Ÿ
+     * @return the JSON object å›å‚³SQLåŸ·è¡Œçµæœèˆ‡è©²æœƒå“¡ç·¨è™Ÿä¹‹æœƒå“¡è³‡æ–™
      */
     public JSONObject getByID(String id){
-        //·s«Ø¤@­ÓAttractionª«¥ó¤§aÅÜ¼Æ¡A°O¿ı¨C¤@¦ì¬d¸ß¤§´ºÂI¸ê®Æ
+        //æ–°å»ºä¸€å€‹Attractionç‰©ä»¶ä¹‹aè®Šæ•¸ï¼Œè¨˜éŒ„æ¯ä¸€ä½æŸ¥è©¢ä¹‹æ™¯é»è³‡æ–™
         Attraction a = null;
-        //¥Î©óÀx¦s©Ò¦³ÀË¯Á¦^¤§´ºÂI¡A¥HJSONArray¤è¦¡Àx¦s
+        //ç”¨æ–¼å„²å­˜æ‰€æœ‰æª¢ç´¢å›ä¹‹æ™¯é»ï¼Œä»¥JSONArrayæ–¹å¼å„²å­˜
         JSONArray jsa = new JSONArray();
-        //¬ö¿ı¹ê»Ú°õ¦æ¤§SQL«ü¥O
+        //ç´€éŒ„å¯¦éš›åŸ·è¡Œä¹‹SQLæŒ‡ä»¤
         String execute_sql = "";
-        //¬ö¿ıµ{¦¡¶}©l°õ¦æ®É¶¡
+        //ç´€éŒ„ç¨‹å¼é–‹å§‹åŸ·è¡Œæ™‚é–“
         long start_time = System.nanoTime();
-        //¬ö¿ıSQLÁ`¦æ¼Æ
+        //ç´€éŒ„SQLç¸½è¡Œæ•¸
         int row = 0;
-        //Àx¦sJDBCÀË¯Á¸ê®Æ®w«á¦^¶Ç¤§µ²ªG¡A¥Hpointer¤è¦¡²¾°Ê¨ì¤U¤@µ§¸ê®Æ
+        //å„²å­˜JDBCæª¢ç´¢è³‡æ–™åº«å¾Œå›å‚³ä¹‹çµæœï¼Œä»¥pointeræ–¹å¼ç§»å‹•åˆ°ä¸‹ä¸€ç­†è³‡æ–™
         ResultSet rs = null;
         try{
-            //¨ú±o¸ê®Æ®w³s½u
+            //å–å¾—è³‡æ–™åº«é€£ç·š
             conn = DBMgr.getConnection();
-            //SQL«ü¥O
+            //SQLæŒ‡ä»¤
             String sql = "SELECT * FROM `mydb`.`tbl_Attraction` WHERE `attraction_id` = ? LIMIT 1";
-            //±N°Ñ¼Æ¦^¶ñ¦ÜSQL«ü¥O·í¤¤
+            //å°‡åƒæ•¸å›å¡«è‡³SQLæŒ‡ä»¤ç•¶ä¸­
             pres = conn.prepareStatement(sql);
             pres.setString(1, id);
-            //°õ¦æ¬d¸ß¤§SQL«ü¥O¨Ã¬ö¿ı¨ä¦^¶Ç¤§¸ê®Æ
+            //åŸ·è¡ŒæŸ¥è©¢ä¹‹SQLæŒ‡ä»¤ä¸¦ç´€éŒ„å…¶å›å‚³ä¹‹è³‡æ–™
             rs = pres.executeQuery();
 
-            //¬ö¿ı¯u¹ê°õ¦æªºSQL«ü¥O¡A¨Ã¦L¥X
+            //ç´€éŒ„çœŸå¯¦åŸ·è¡Œçš„SQLæŒ‡ä»¤ï¼Œä¸¦å°å‡º
             execute_sql = pres.toString();
             System.out.println(execute_sql);
 
-            //³z¹Lwhile°j°é²¾°Êpointer¡A¨ú±o¨C¤@µ§¦^¶Ç¸ê®Æ
+            //é€éwhileè¿´åœˆç§»å‹•pointerï¼Œå–å¾—æ¯ä¸€ç­†å›å‚³è³‡æ–™
             while(rs.next()){
                 row += 1;
 
@@ -94,21 +94,21 @@ public class AttractionHelper {
                 jsa.put(a.getData());
             }
         }catch(SQLException e){
-            /** ¦L¥XJDBC SQL«ü¥O¿ù»~ **/
+            /** å°å‡ºJDBC SQLæŒ‡ä»¤éŒ¯èª¤ **/
             System.err.format("SQL State: %s\n%s\n%s", e.getErrorCode(), e.getSQLState(), e.getMessage());
         }catch(Exception e){
-            /** ­Y¿ù»~«h¦L¥X¿ù»~°T®§ */
+            /** è‹¥éŒ¯èª¤å‰‡å°å‡ºéŒ¯èª¤è¨Šæ¯ */
             e.printStackTrace();
         }finally{
-            /** Ãö³¬³s½u¨ÃÄÀ©ñ©Ò¦³¸ê®Æ®w¬ÛÃö¤§¸ê·½ **/
+            /** é—œé–‰é€£ç·šä¸¦é‡‹æ”¾æ‰€æœ‰è³‡æ–™åº«ç›¸é—œä¹‹è³‡æº **/
             DBMgr.close(rs,pres,conn);
         }
-        /** ¬ö¿ıµ{¦¡µ²§ô°õ¦æ®É¶¡ */
+        /** ç´€éŒ„ç¨‹å¼çµæŸåŸ·è¡Œæ™‚é–“ */
         long end_time = System.nanoTime();
-        /** ¬ö¿ıµ{¦¡°õ¦æ®É¶¡ */
+        /** ç´€éŒ„ç¨‹å¼åŸ·è¡Œæ™‚é–“ */
         long duration = (end_time - start_time);
         
-        /** ±NSQL«ü¥O¡Bªá¶O®É¶¡¡B¼vÅT¦æ¼Æ»P©Ò¦³´ºÂI¸ê®Æ¤§JSONArray¡A«Ê¸Ë¦¨JSONObject¦^¶Ç */
+        /** å°‡SQLæŒ‡ä»¤ã€èŠ±è²»æ™‚é–“ã€å½±éŸ¿è¡Œæ•¸èˆ‡æ‰€æœ‰æ™¯é»è³‡æ–™ä¹‹JSONArrayï¼Œå°è£æˆJSONObjectå›å‚³ */
         JSONObject response = new JSONObject();
         response.put("sql", execute_sql);
         response.put("row", row);
