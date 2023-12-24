@@ -2,11 +2,14 @@ package controller;
 
 import java.io.*;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import org.json.*;
+import app.Member;
 import app.Customer;
 import app.CustomerHelper;
 import tools.JsonReader;
@@ -18,7 +21,7 @@ public class CustomerController extends HttpServlet {
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** ch，CustomerHelper之物件與Customer相關之資料庫方法（Sigleton） */
+    /** ch，CustomerHelper之物件與Member相關之資料庫方法（Sigleton） */
     private CustomerHelper ch =  CustomerHelper.getHelper();
     
     /**
@@ -35,8 +38,11 @@ public class CustomerController extends HttpServlet {
         JsonReader jsr = new JsonReader(request);
         JSONObject jso = jsr.getObject();
 
+
+
         /** 取出經解析到JSONObject之Request參數 */
         String name = jso.getString("name");
+        //int id = Integer.parseInt(jso.getString("id"));
         String email = jso.getString("email");
         String password = jso.getString("password");
         String intro = jso. getString("intro");
@@ -76,6 +82,7 @@ public class CustomerController extends HttpServlet {
         }
     }
 
+
     /**
      * 處理Http Method請求GET方法（取得資料）
      *
@@ -93,7 +100,7 @@ public class CustomerController extends HttpServlet {
         /** 新建一個JSONObject用於將回傳之資料進行封裝 */
         JSONObject resp = new JSONObject();
 
-        ///如果id = -1表示要登入
+        //如果id = -1表示要登入
         if(id == -1){
             String email = jsr.getParameter("email");
             String password = jsr.getParameter("password");
@@ -103,21 +110,24 @@ public class CustomerController extends HttpServlet {
             if (customer_id != -1) {
                 resp.put("status", "200");
                 resp.put("message", "登入成功");
-                JSONObject query = ch.getByID(customer_id);
-                resp.put("response", query);
+                resp.put("usertype", 1);
+                resp.put("customer_id", customer_id);
             } else {
                 resp.put("status", "401");
-                resp.put("message", "登入失败，使用者名稱或密碼不正確");
+                resp.put("message", "登入失敗，使用者名稱或密碼不正確");
+                String jsonString = "{\"usertype\":\"fail\"}";
+                JSONObject usertype = new JSONObject(jsonString);
+                resp.put("usertype",usertype);
             }
         }
-        else{
-            /** 透過MemberHelper物件的getByID()方法自資料庫取回該名會員之資料，回傳之資料為JSONObject物件 */
-            JSONObject query = ch.getByID(id);
-            
-            resp.put("status", "200");
-            resp.put("message", "會員資料取得成功");
-            resp.put("response", query);
-        }
+//        else{
+//           /** 透過MemberHelper物件的getByID()方法自資料庫取回該名會員之資料，回傳之資料為JSONObject物件 */
+//            JSONObject query = ch.getByID(id);
+//            
+//            resp.put("status", "200");
+//            resp.put("message", "會員資料取得成功");
+//            resp.put("response", query); 
+//        }
         /** 透過JsonReader物件回傳到前端（以JSONObject方式） */
         jsr.response(resp, response);
     }
