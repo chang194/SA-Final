@@ -46,7 +46,7 @@
         <div class="row justify-content-center custom-section">
             <div class="col-md-6">
                 <h1 class="mb-4 text-center">註冊</h1>
-                <form>
+                <form action="api/customer.do" method="post">
                     <div class="form-group row-gap">
                         <label for="email">帳號</label>
                         <input type="String" class="form-control" id="email" placeholder="Enter email" required>
@@ -82,7 +82,7 @@
                         </select>
                     </div>
                     <div class="d-grid gap-2 col-3 mx-auto">
-                        <button type="submit" class="btn btn-primary mb-3">註冊</button>
+                        <button type="submit" id="submitBtn" class="btn btn-primary mb-3">註冊</button>
                     </div>
                 </form>
             </div>
@@ -92,17 +92,19 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="./login.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelector('form').addEventListener('submit', function (event) {
-                event.preventDefault(); // Prevent the default form submission
-
+    	document.addEventListener('DOMContentLoaded', function () {
+        	var submitBtn = document.getElementById('submitBtn');
+        	submitBtn.addEventListener('click', function (event) {
+            	event.preventDefault();
+            	
+                
                 var email = document.getElementById('email').value;
                 var username = document.getElementById('username').value;
                 var password = document.getElementById('password').value;
                 var confirmPassword = document.getElementById('confirmPassword').value;
                 var userType = document.getElementById('userType').value;
                 var bth = document.getElementById('bth').value;
-                var intro = document.getElementById('bth').value;
+                var intro = document.getElementById('intro').value;
 
                 if (!validateEmail(email)) {
                     alert('請請輸入有效的電子郵件！');
@@ -123,16 +125,15 @@
 
                 // Data to be sent to the backend
                 var registrationData = {
+                	name: username,
                     email: email,
-                    username: username,
                     password: password,
-                    confirmPassword: confirmPassword,
-
-                    userType: userType,
+                    intro: intro,
+                    birthday: bth
                     // Include other fields here
                 };
 
-                fetch('YOUR_BACKEND_ENDPOINT_FOR_REGISTRATION', {
+                fetch('api/customer.do', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
