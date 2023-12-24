@@ -1,0 +1,20 @@
+.btn,
+button {
+  background-color: #364f37;
+  color: #e0d6ce;
+  transition: background-color 0.3s, color 0.3s;
+  border: none;
+  /* Adding a transition for a smoother change */
+}
+
+.btn:hover,
+button:hover {
+  background-color: #e0d6ce;
+  color: #364f37;
+  border: none;
+}
+
+.btn {
+  --bs-btn-active-color:#e0d6ce;
+  --bs-btn-active-bg:#364f37;
+}
