@@ -134,9 +134,14 @@
                 .then(data => {
                     console.log('Response from server:', data);
                         if (data.status === '200') {
+                            var user_id = data.id;
+                            var login_status = 'true';
+                            localStorage.setItem('loggedIn', 'true');
                         	alert('登入成功！');
                             if (userType === "customer"){
-                            	window.location.href = 'index.html'; // 導向房客頁面
+                            	window.location.href = 'index.html?user_id=' 
+                            			+ encodeURIComponent(data.id) 
+                            			+ '&login_status=' + encodeURIComponent(login_status); // 導向房客頁面
                         	} else if (userType === 'hotelowner') {
                             	window.location.href = 'hotelowner.html'; // 導向住宿業者頁面
                             }
