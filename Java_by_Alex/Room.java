@@ -10,18 +10,20 @@ public class Room {
 	private int room_price;
 	private int max_capacity;
 	private int room_number; //此房型的總數量
+	private String roominfo;
 	
 	//add
-	public Room(int hotel_id,String room_type,String image,int room_number,int room_price,int max_capacity) {
+	public Room(int hotel_id,String room_type,String image,int room_number,int room_price,int max_capacity,String roominfo) {
 		this.hotel_id = hotel_id;
 		this.room_type = room_type;
 		this.image = image;
 		this.room_number = room_number;
 		this.room_price = room_price;
 		this.max_capacity = max_capacity;
+		this.roominfo=roominfo;
 	}
 	//revise,getdata
-	public Room(int room_id,int hotel_id,String room_type,String image,int room_number,int room_price,int max_capacity){
+	public Room(int room_id,int hotel_id,String room_type,String image,int room_number,int room_price,int max_capacity,String roominfo){
 		this.room_id = room_id;
 		this.hotel_id = hotel_id;
 		this.room_type = room_type;
@@ -29,6 +31,7 @@ public class Room {
 		this.room_number = room_number;
 		this.room_price = room_price;
 		this.max_capacity = max_capacity;
+		this.roominfo=roominfo;
 	}
 	public int getRoomId() {
 		return room_id;
@@ -51,6 +54,9 @@ public class Room {
 	public int getMaxCapacity(){
 		return max_capacity;
 	}
+	public String getRoomInfo(){
+		return roominfo;
+	}
 	public JSONObject getData() {
 		JSONObject jso = new JSONObject();
 		jso.put("hotel_id", getHotelId());
@@ -59,6 +65,7 @@ public class Room {
 		jso.put("room price",getRoomPrice());
 		jso.put("max capacity",getMaxCapacity());
 		jso.put("room number", getRoomNumber());
+		jso.put("roominfo", getRoomInfo());
 		return jso;
 	}
 	
