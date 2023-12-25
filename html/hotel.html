@@ -16,7 +16,7 @@
 
 <body>
   <nav class="navbar bg-white navbar-white p-1 navbar-expand-lg">
-    <div class="container">
+    <div class="container-fluid">
       <a href="index.html" class="navbar-brand">
         <img src="../pic/LOGO.png" alt="logo">
       </a>
@@ -36,7 +36,7 @@
             aria-expanded="false">
             <img src="../pic/會員.png" alt="會員圖標">
           </button>
-          <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="memberDropdown">
             ${isLoggedIn ?
             `<li><a class="dropdown-item" href="member.html">會員資料</a></li>
             <li><button class="dropdown-item" onclick="logout()">登出</button></li>` :
@@ -50,74 +50,147 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-lg-8">
-        <h1>Hotel Name</h1>
-        <p>地址: Hotel Address, City, Country</p>
-        <p>電話: +1234567890</p>
-        <p>Email: info@example.com</p>
-        <p>關於: A brief description of the hotel...</p>
-
-        <h2>房型</h2>
-        <div class="row">
-          <div class="col-md-6">
-            <h4>房型1</h4>
-            <p>房型資訊：吧啦吧啦</p>
-            <p>價格：＄100000/晚</p>
-            <button class="btn btn-primary addToCart" data-room-id="room1">加入購物車</button>
-          </div>
-          <div class="col-md-6">
-            <h4>房型2</h4>
-            <p>房型資訊：吧啦吧啦</p>
-            <p>價格：＄100000/晚</p>
-            <button class="btn btn-primary addToCart" data-room-id="room2">加入購物車</button>
-          </div>
-          <!-- Add more room types as needed -->
-        </div>
-
-        <!-- Additional hotel information, amenities, etc. -->
-
+        <h1 id="hotelname">旅店名稱</h1>
+        <p id="location">旅店地址</p>
+        <p id="hotelphone">旅店電話</p>
+        <p id="intro">簡介</p>
       </div>
       <div class="col-lg-4">
-        <!-- Add images or other related content -->
-        <img src="狗1.jpg" alt="Hotel Image" class="img-fluid">
+        <img src="" alt="" id="hotelimage" style="display: grid;">
+      </div>
+    </div>
+    <div class="row">
+      <h2>房型介紹</h2>
+      <div class="row" id="roomDetails">
+        <div class="col-md-6">
+          <h4 id="room_type"></h4>
+          <img src="" alt="" id="image">
+          <p id="room_info"></p>
+          <p id="max_capacity"></p>
+          <p id="room_price"></p>
+          <button class="btn btn-primary addToCart">加入購物車</button>
+        </div>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="./login.js"></script>
   <script>
-    // 获取 isLoggedIn 变量（假设它是一个布尔值，表示用户是否已登录）
-    const isLoggedIn = true; // 例如：false 表示未登录状态
+    function fetchHotelInfo(hotel_id) {
+      return fetch(`api/hotel.do?id=${hotel_id}`)
+        .then(res => res.json())
+        .then(data => data);
+    }
 
-    const addToCartButtons = document.querySelectorAll('.addToCart');
+    function fetchRoomData(hotel_id) {
+      return fetch(`api/room.do?hotelid=${hotel_id}`)
+        .then(res => res.json())
+        .then(data => {
+          const roomIds = data.rooms.map(room => room.id); // 获取所有房型的 ID
+          return { roomIds, data };
+        });
+    }
 
-    addToCartButtons.forEach(button => {
-      button.addEventListener('click', function () {
-        if (isLoggedIn) {
-          const roomId = button.getAttribute('data-room-id');
-          const roomInfo = {
-            id: roomId,
-            // 在这里你可以存储更多关于房型的信息，例如价格、描述等等
-            // price: 100000,
-            // description: '...'
-          };
-          cart.push(roomInfo);
-          // 弹出加入成功的消息
-          alert(`已將 ${roomId} 加入購物車`); // 这里显示已加入购物车的消息
+    function displayHotelInfo(data) {
+      document.getElementById('hotelname').textContent = data.hotelname;
+      document.getElementById('location').textContent = data.location;
+      document.getElementById('hotelimage').textContent = data.image;
+      //document.getElementById('hotelphone').textContent = data.phone;
+      document.getElementById('intro').textContent = data.intro
+    }
 
-          console.log('当前购物车内容：', cart);
+    function displayRoomData(data) {
+      var roomDetailsContainer = document.getElementById("roomDetails");
 
-          // 将购物车内容存储到本地存储
-          localStorage.setItem('cart', JSON.stringify(cart));
-        } else {
-          // 用户未登录，提示登录后再进行操作
-          alert('請先登入！');
-        }
+      data.rooms.forEach(room => {
+        const roomDiv = document.createElement("div");
+        roomDiv.classList.add("col-md-6");
+
+        roomDiv.innerHTML = `
+      <h4>${room.room_type}</h4>
+      <img src=${room.image}>
+      <p>${room.room_info}</p>
+      <p>${room.max_capacity}人房</p>
+      <p>${room.room_price} 元/晚</p>
+      <button class="btn btn-primary addToCart" data-room-id="${room.id}">加入購物車</button>
+    `;
+
+        roomDetailsContainer.appendChild(roomDiv);
       });
+
+
+      roomDetailsContainer.querySelectorAll('.addToCart').forEach(button => {
+        button.addEventListener('click', function () {
+          var room_id = button.getAttribute('data-room-id');
+          // 通过 roomId 进行后续操作，比如向后端发送请求等等
+          // 例如：fetchRoomDetails(roomId);
+        });
+      });
+    }
+
+    window.addEventListener('load', () => {
+      fetchHotelId()
+        .then(hotel_id => {
+          fetchHotelInfo(hotel_id)
+            .then(data => {
+              displayHotelInfo(data);
+            })
+            .catch(error => {
+              console.error('獲取旅店信息出錯:', error);
+            });
+
+          fetchRoomData(hotel_id)
+            .then(({ room_id, data }) => {
+              displayRoomData(data);
+
+              document.querySelectorAll('.addToCart').forEach((button, index) => {
+                button.addEventListener('click', function () {
+                  const roomId = roomIds[index]; // 通过索引获取相应房型的 ID
+                  // 通过 roomId 进行后续操作，比如向后端发送请求等等
+                  // 例如：fetchRoomDetails(roomId);
+                });
+              });
+            })
+            .catch(error => {
+              console.error('獲取旅店信息出錯:', error);
+            });
+        });
     });
-  </script>
+
+
+    var isLoggedIn = true; // Default login status
+    var cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart from localStorage
+    function login(username, password) {
+      // Logic for user login
+    }
+    function logout() {
+      // Logic for user logout
+    }
+
+    // Function to add room to cart
+    function addToCart(room) {
+      fetch('/', {
+        method: '',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ roomId: room.id }), // Assuming room.id exists
+      })
+        .then(response => {
+          if (response.ok) {
+            // Perform actions for successful addition to cart
+          } else {
+            // Handle failed addition to cart
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }
+
 
   </script>
+
 </body>
 
 </html>
