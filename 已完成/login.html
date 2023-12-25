@@ -23,14 +23,14 @@
 
 <body>
     <nav class="navbar bg-white navbar-white p-1 navbar-expand-lg">
-        <div class="container">
+        <div class="container-fluid">
             <a href="index.html" class="navbar-brand">
                 <img src="static/img/LOGO.png" alt="logo">
             </a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a href="" class="nav-link">旅遊社群</a>
+                        <a href="journeycommunity.html" class="nav-link">旅遊社群</a>
                     </li>
                     <li class="nav-item" id="myOrdersNavItem" style="display: none;">
                         <a href="myorder.html" class="nav-link">我的訂單</a>
@@ -43,7 +43,7 @@
                         data-bs-toggle="dropdown" aria-expanded="false">
                         <img src="static/img/會員.png" alt="會員圖標">
                     </button>
-                    <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="memberDropdown">
                         ${isLoggedIn ?
                         `<li><a class="dropdown-item" href="member.html">會員資料</a></li>
                         <li><button class="dropdown-item" onclick="logout()">登出</button></li>` :
