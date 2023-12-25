@@ -19,12 +19,6 @@
             margin-bottom: 120px;
         }
 
-        /* Hide confirm password by default */
-        #confirmPasswordLabel,
-        #confirmPasswordInput {
-            display: none;
-        }
-
         .btn-secondary {
             visibility: hidden;
         }
@@ -112,9 +106,8 @@
             document.getElementById("username").disabled = false;
             document.getElementById("password").disabled = false;
             document.getElementById("confirmPassword").disabled = false;
-            document.getElementById("bth").disabled = false;
+            //document.getElementById("bth").disabled = false;
             document.getElementById("intro").disabled = false;
-            document.getElementById("confirmPasswordLabel").disabled = false;
 
             const button = document.querySelector('button.btn-primary');
             button.textContent = '確認編輯';
@@ -132,18 +125,22 @@
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
             var confirmPassword = document.getElementById("confirmPassword").value;
-            var dob = document.getElementById("bth").value;
+            //var bth = document.getElementById("bth").value;
             var intro = document.getElementById("intro").value;
+
+            if (password !== confirmPassword) {
+                alert('密碼與確認密碼不相符');
+                return false;
+            }
 
             var MemberData = {
                 name: username,
                 password: password,
-                confirmPassword: confirmPassword,
-                bth: bth,
+                //birthday: bth,
                 intro: intro
             };
 
-            fetch('/api/customer.do', {
+            fetch('api/customer.do', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -161,21 +158,18 @@
                     displayNotification('更新成功！');
                 })
                 .catch(error => {
-                    console.error('錯誤！', error);
                     displayNotification('更新失敗！');
                     editBtn.style.display = "block";
                     saveBtn.style.display = "none";
-
                     const cancelButton = document.querySelector('.btn-secondary');
                     cancelButton.style.display = 'none';
-                    cancelButton.style.visibility = 'visible';
+                    cancelChanges();
                 });
 
             editMode = false;
 
             saveBtn.style.display = "none";
             editBtn.style.display = "block";
-            button.setAttribute('onclick', 'enableEditMode()');
         }
 
         function displayNotification(message) {
@@ -188,9 +182,7 @@
             document.getElementById("username").disabled = true;
             document.getElementById("password").disabled = true;
             document.getElementById("confirmPassword").disabled = true;
-            document.getElementById("bth").disabled = true;
             document.getElementById("intro").disabled = true;
-            document.getElementById("confirmPasswordLabel").disabled = true;
 
             const button = document.querySelector('button.btn-primary');
             button.textContent = '編輯';

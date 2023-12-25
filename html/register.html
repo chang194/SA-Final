@@ -110,6 +110,21 @@
                     return false;
                 }
 
+                if (!username) {
+                    alert('請填寫使用者名稱！');
+                    return false;
+                }
+
+                if (!password) {
+                    alert('請輸入密碼！');
+                    return false;
+                }
+
+                if (!confirmPassword) {
+                    alert('請確認密碼！');
+                    return false;
+                }
+
                 if (password !== confirmPassword) {
                     alert('密碼與確認密碼不相符');
                     return false;
