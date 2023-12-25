@@ -208,7 +208,7 @@ public class RoomHelper {
             String room_info = room.getRoomInfo();
             
             /** 將參數回填至SQL指令當中 */
-            pres = conn.prepareStatement(sql);
+            pres = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             pres.setInt(1, hotel_id);
             pres.setString(2, room_type);
             pres.setString(3, image);
@@ -246,13 +246,13 @@ public class RoomHelper {
                 // 计算当前循环的日期
                 LocalDate date = tomorrowDate.plusDays(i);
 
-                sql = "INSERT INTO `mydb`.`tbl_room_availability` (room_id, date, available_quantity) VALUES (?, ?, ?)";
+                sql = "INSERT INTO `mydb`.`tbl_roomavailability` (room_id, date, available_quantity) VALUES (?, ?, ?)";
                 PreparedStatement preparedStatement = conn.prepareStatement(sql);
                 // 设置参数
                 preparedStatement.setInt(1, new_room_id);
                 preparedStatement.setDate(2, Date.valueOf(date));
                 preparedStatement.setInt(3, room_number);
-
+                
                 // 执行插入
                 preparedStatement.executeUpdate();
             }
@@ -387,7 +387,7 @@ public class RoomHelper {
             System.out.println(exexcute_sql);
 
             ////刪除空房紀錄
-            sql = "DELETE FROM `mydb`.`tbl_room_availability` WHERE room_id = ?";
+            sql = "DELETE FROM `mydb`.`tbl_roomavailability` WHERE room_id = ?";
             PreparedStatement pres = conn.prepareStatement(sql);
             pres.setInt(1, id);
             pres.executeUpdate();
@@ -433,7 +433,7 @@ public class RoomHelper {
         try {
             conn = DBMgr.getConnection();
             String sql = "SELECT MIN(available_quantity) AS min_available_quantity " +
-                     "FROM `mydb`.`tbl_Room_Availability` " +
+                     "FROM `mydb`.`tbl_roomavailability` " +
                      "WHERE room_id = ? AND date BETWEEN ? AND DATE_SUB(?, INTERVAL 1 DAY)";
 
             pres = conn.prepareStatement(sql);
@@ -487,7 +487,7 @@ public class RoomHelper {
         try {
             conn = DBMgr.getConnection();
             String sql = "SELECT date, available_quantity " +
-            "FROM `mydb`.`tbl_Room_Availability` " +
+            "FROM `mydb`.`tbl_roomavailability` " +
             "WHERE room_id = ? AND available_quantity > 0";
 
             pres = conn.prepareStatement(sql);
