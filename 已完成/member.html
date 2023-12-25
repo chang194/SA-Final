@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="static/css/button.css">
+    <script src="static/js/login.js"></script>
+    <style>
+        .row-gap {
+            margin-bottom: 20px;
+        }
+
+        .custom-section {
+            margin-top: 120px;
+            margin-bottom: 120px;
+        }
+
+        .btn-secondary {
+            visibility: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar bg-white navbar-white p-3 navbar-expand-lg">
+        <div class="container">
+            <a href="index.html" class="navbar-brand">
+                <img src="static/img/LOGO.png" alt="logo">
+            </a>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="static/img/會員.png" alt="會員圖標">
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                    ${isLoggedIn ?
+                    `<li><a class="dropdown-item" href="member.html">會員資料</a></li>
+                    <li><button class="dropdown-item" onclick="logout()">登出</button></li>` :
+                    `<li><a class="dropdown-item" href="login.html">登入</a></li>`}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <div class="row justify-content-center custom-section">
+            <div class="col-md-6">
+                <h1 class="mb-4 text-center">會員資料</h1>
+                <form action="api/customer.do" method="put">
+                    <div class="form-group row-gap">
+                        <label for="email">帳號</label>
+                        <input type="String" class="form-control" id="email" placeholder=email disabled>
+                    </div>
+                    <div class="form-group row-gap">
+                        <label for="username">使用者名稱</label>
+                        <input type="String" class="form-control" id="name" placeholder=name disabled>
+                    </div>
+                    <div class="form-group row-gap">
+                        <label for="password">密碼</label>
+                        <input type="String" class="form-control" id="password" placeholder="******" disabled>
+                    </div>
+                    <div class="form-group row-gap" id="confirmPasswordLabel">
+                        <label for="confirmPassword">確認密碼</label>
+                        <input type="String" class="form-control" id="confirmPassword" placeholder="******" disabled>
+                    </div>
+                    <div class="form-group row-gap">
+                        <label for="bth">生日</label>
+                        <input type="date" class="form-control" id="birthday" placeholder=birthday disabled>
+                    </div>
+                    <div class="form-group row-gap">
+                        <label for="intro">簡介</label>
+                        <textarea class="form-control" id="intro" rows="3" placeholder=intro
+                            disabled></textarea>
+                    </div>
+                    <div class="form-group row-gap">
+                        <label for="points">會員點數</label>
+                        <input type="text" class="form-control" id="customer_point" placeholder="customer_point" disabled>
+                    </div>
+                    <div class="d-grid gap-2 col-3 mx-auto">
+                        <button type="button" class="btn btn-primary mb-3" id="editButton"
+                            onclick="enableEditMode()">編輯</button>
+                        <button type="button" class="btn btn-primary mb-3" id="saveButton"
+                            onclick="saveChanges()">確認編輯</button>
+                        <button type="button" class="btn btn-secondary mb-3" onclick="cancelChanges()">取消</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let editMode = false;
+        const editBtn = document.getElementById("editButton");
+        const saveBtn = document.getElementById("saveButton");
+        saveBtn.style.display = "none";
+
+        function enableEditMode() {
+            editMode = true;
+
+            document.getElementById("name").disabled = false;
+            document.getElementById("password").disabled = false;
+            document.getElementById("confirmPassword").disabled = false;
+            document.getElementById("intro").disabled = false;
+
+            const button = document.querySelector('button.btn-primary');
+            button.textContent = '確認編輯';
+            button.addEventListener('click', saveChanges);
+
+            editBtn.style.display = "none";
+            saveBtn.style.display = "block";
+
+            const cancelButton = document.querySelector('.btn-secondary');
+            cancelButton.style.display = 'block';
+            cancelButton.style.visibility = 'visible';
+        }
+
+        function saveChanges() {
+        	var id = user_id;
+            var username = document.getElementById("name").value;
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            var intro = document.getElementById("intro").value;
+
+            if (!username) {
+                alert('請填寫使用者名稱！');
+                return false;
+            }
+
+            if (!password) {
+                alert('請輸入密碼！');
+                return false;
+            }
+
+            if (!confirmPassword) {
+                alert('請確認密碼！');
+                return false;
+            }
+
+            if (password !== confirmPassword) {
+                alert('密碼與確認密碼不相符');
+                return false;
+            }
+
+            var MemberData = {
+            	id: user_id,
+                name: username,
+                password: password,
+                intro: intro
+            };
+
+            fetch('api/customer.do', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(MemberData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Updated data:', data);
+                    displayNotification('更新成功！');
+                    editBtn.style.display = "block";
+                    saveBtn.style.display = "none";
+                    const cancelButton = document.querySelector('.btn-secondary');
+                    cancelButton.style.display = 'none';
+                    cancelChanges();
+                })
+                .catch(error => {
+                    displayNotification('更新失敗！');
+                    editBtn.style.display = "block";
+                    saveBtn.style.display = "none";
+                    const cancelButton = document.querySelector('.btn-secondary');
+                    cancelButton.style.display = 'none';
+                    cancelChanges();
+                });
+
+            editMode = false;
+
+            document.getElementById('password').setAttribute('placeholder', password);
+            document.getElementById('confirmPassword').setAttribute('placeholder', confirmPassword);
+            saveBtn.style.display = "none";
+            editBtn.style.display = "block";
+        }
+
+        function displayNotification(message) {
+            alert(message);
+        }
+
+        function cancelChanges() {
+            editMode = false;
+
+            document.getElementById("name").disabled = true;
+            document.getElementById("password").disabled = true;
+            document.getElementById("confirmPassword").disabled = true;
+            document.getElementById("intro").disabled = true;
+
+            const button = document.querySelector('button.btn-primary');
+            button.textContent = '編輯';
+            button.setAttribute('onclick', 'enableEditMode()');
+            editBtn.style.display = "block";
+            saveBtn.style.display = "none";
+
+            const cancelButton = document.querySelector('.btn-secondary');
+            cancelButton.style.display = editMode ? 'block' : 'none';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            getData();
+        });
+        
+        function getData(){
+        	var id = user_id;
+        	var url = `api/customer.do?id=${encodeURIComponent(id)}`;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(query => {
+                    console.log('Response from server:', query);
+                    console.log('Response from server:', query);
+
+                 // 從 response 中取得 data 陣列
+                 var dataArray = query.response.data;
+
+                 // 檢查 data 是否為陣列且有資料
+                 if (Array.isArray(dataArray) && dataArray.length > 0) {
+
+                
+                   // 從第一筆資料中取得 email
+                   var firstData = dataArray[0];
+                   var email = firstData.email;
+                   var name = firstData.name;
+                   var birthday = firstData.birthday;
+                   var intro = firstData.intro;
+                   var customer_point = firstData.customer_point;
+                   var password = "********";
+                   var confirmPassword = "********";
+                   
+                   
+
+                   // 印出 email
+                   console.log('Email:', email);
+                   console.log('Name:', name);
+                   console.log('Birthday:', birthday);
+                   console.log('Intro:', intro);
+                   console.log('Customer Point:', customer_point);
+
+                   // 將 email 資料設定到你的 HTML 元素
+                   document.getElementById('email').setAttribute('placeholder', email);
+                   document.getElementById('name').setAttribute('placeholder', name);
+                   document.getElementById('birthday').setAttribute('placeholder', birthday);
+                   document.getElementById('intro').setAttribute('placeholder', intro);
+                   document.getElementById('customer_point').setAttribute('placeholder', customer_point);
+                   document.getElementById('password').setAttribute('placeholder', password);
+                   document.getElementById('confirmPassword').setAttribute('placeholder', confirmPassword);
+                   
+                   
+                   
+                 } else {
+                   // 若沒有資料，印出錯誤訊息
+                   console.error('No data found.');
+                 }
+                    
+                    var email = query.email;
+                    var name = query.name;
+                    var birthday = query.birthday;
+                    var intro = query.intro;
+                    var customer_point = query.customer_point;
+                  
+                    
+                })
+                .catch(error => {
+                    displayNotification('資料取得失敗！');
+                    var email = "Your email";
+                    var name = "Your username";
+                    var birthday = "Your birthday";
+                    var intro = "Something about you";
+                    var customer_point = "member point";
+                    var password = "********";
+                    var confirmPassword = "********";
+                    
+                    document.getElementById('email').setAttribute('placeholder', email);
+                    document.getElementById('name').setAttribute('placeholder', name);
+                    document.getElementById('birthday').setAttribute('placeholder', birthday);
+                    document.getElementById('intro').setAttribute('placeholder', intro);
+                    document.getElementById('customer_point').setAttribute('placeholder', customer_point);
+                    document.getElementById('password').setAttribute('placeholder', password);
+                    document.getElementById('confirmPassword').setAttribute('placeholder', confirmPassword);
+                });
+
+            editMode = false;
+
+            saveBtn.style.display = "none";
+            editBtn.style.display = "block";
+        }
+      	//獲取 URL 中的查詢參數
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // 使用 get 方法根據參數名獲取值
+     // 在控制台輸出檢查是否正確獲取到值
+      	var user_id = localStorage.getItem('user_id');
+        console.log('user_id:', user_id);        
+    </script>
+
+
+</body>
+
+</html>
