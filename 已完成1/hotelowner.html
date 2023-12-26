@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Hotelowner Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="static/css/navbar.css">
+  <link rel="stylesheet" type="text/css" href="static/css/button.css">
+  <script src="static/js/login.js"></script>
+  <style>
+    .row-gap {
+      margin-bottom: 20px;
+    }
+
+    .custom-section {
+      margin-top: 120px;
+      margin-bottom: 120px;
+    }
+
+    .card.label {
+      padding-inline: 5px;
+    }
+
+    .roomavailable,
+    input[type="number"] {
+      border-radius: 30px;
+      padding-inline: 5px;
+      width: 80px;
+    }
+
+    .room-card {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar bg-white navbar-white p-3 navbar-expand-lg">
+    <div class="container">
+      <a href="hotelowner.html" class="navbar-brand">
+        <img src="static/img/LOGO.png" alt="logo">
+      </a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a href="edithotel.html" class="nav-link">修改旅店資料</a>
+          </li>
+        </ul>
+      </div>
+      <div class="dropdown">
+        <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          <img src="static/img/會員.png" alt="會員圖標">
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container text-center custom-section">
+    <div class="row">
+      <div class="col-6">
+        <h2>訂單管理</h2>
+        <table class="table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">訂單編號</th>
+                <th scope="col">房客姓名</th>
+                <th scope="col">房間id</th>
+                <th scope="col">下單日期</th>
+                <th scope="col">住宿日期</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td></td>
+                <td></td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td></td>
+                <td></td>
+              <tr>
+                <th scope="row">3</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td></td>
+                <td></td>
+              </tr>
+              </tr>
+            </tbody>
+          </table>
+        </table>
+      </div>
+      <div class="col-6">
+        <h2>房型管理</h2>
+        <a href="createroom.html" class="btn btn-success mt-3" id="addRoomTypeBtn">新增房型</a>
+        <div class="row roomTypesContainer">
+          <!-- 房型卡片将会动态添加到这里 -->
+        </div>
+        <div id="roomTemplate" style="display: none;">
+          <!-- 用于克隆的房型模板，初始时设为隐藏 -->
+          <div class="col-6">
+            <div class="card shadow-lg">
+              <img src="static/img/狗1.jpg" alt="" class="card-img-top">
+              <div class="card-body">
+                <h3 class="card-title">房型名稱</h3>
+                <label for="roomavailable">剩餘房間數<input type="number" name="roomavailable"
+                    class="roomavailable"></label><br>
+                <button class="btn btn-primary deleteBtn">刪除</button>
+                <a href="#" class="btn btn-primary updateBtn">修改</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+      <script src="static/js/login.js"></script>
+      <script>
+    	//獲取 URL 中的查詢參數
+  		const urlParams = new URLSearchParams(window.location.search);
+  		// 使用 get 方法根據參數名獲取值
+		// 在控制台輸出檢查是否正確獲取到值
+		var user_id = localStorage.getItem('user_id');
+  		var user_type = localStorage.getItem('user_type');
+
+  		// 使用 get 方法根據參數名獲取值
+  		const hotel_id = urlParams.get('hotel_id');
+  		console.log(user_id);
+  		console.log(user_type);
+  		console.log(hotel_id);
+      
+        const addRoomButton = document.getElementById('addRoomButton');
+        const roomTypesContainer = document.querySelector('.roomTypesContainer');
+
+        /*addRoomButton.addEventListener('click', function () {
+          // 创建新的房型卡片
+          const newRoomCard = document.createElement('div');
+          newRoomCard.classList.add('col-6', 'room-card'); // 添加样式类
+
+          newRoomCard.innerHTML = `
+                <div class="card shadow-lg">
+                    <img src="狗1.jpg" alt="" class="card-img-top">
+                    <div class="card-body">
+                        <h3 class="card-title">新房型名稱</h3>
+                        <label for="roomavailable">剩餘房間數<input type="number" name="roomavailable" class="roomavailable"></label><br>
+                        <button class="btn btn-primary deleteBtn">刪除</button>
+                        <a href="#" class="btn btn-primary updateBtn">修改</a>
+                    </div>
+                </div>
+            `;
+
+          roomTypesContainer.appendChild(newRoomCard); // 将新创建的房型卡片添加到容器中
+        });*/
+
+        // 添加点击事件监听器以处理删除按钮的点击事件
+        roomTypesContainer.addEventListener('click', function (event) {
+          const target = event.target;
+
+          // 如果点击的是删除按钮
+          if (target.classList.contains('deleteBtn')) {
+            const roomCard = target.closest('.col'); // 找到最近的父级房型卡片
+
+            // 如果找到了房型卡片，则删除
+            if (roomCard) {
+              // 弹出确认提示框，用户确认后再执行删除操作
+              const confirmDelete = confirm('確認刪除該房型嗎？');
+              if (confirmDelete) {
+                roomCard.remove(); // 从 DOM 中移除房型卡片
+              }
+            }
+          }
+        });
+
+        // 添加点击事件监听器以处理修改按钮的点击事件
+        roomTypesContainer.addEventListener('click', function (event) {
+          const target = event.target;
+
+          // 如果点击的是修改按钮
+          if (target.classList.contains('updateBtn')) {
+            // 获取当前房型的信息，比如房型 ID 或其他标识符
+            // 可以通过 DOM 操作获取需要的信息
+
+            // 假设获取到了房型的 ID
+            const roomId = '123'; // 替换为实际的房型 ID
+
+            // 构建修改页面的 URL，传递房型信息以便在 room.html 中进行修改
+            const editUrl = `room.html?id=${roomId}`; // 这里传递了房型 ID，可以根据实际情况传递更多信息
+
+            // 跳转到修改页面进行编辑
+            window.location.href = editUrl;
+          }
+
+        });
+      </script>
+
+    </div>
+  </div>
+</body>
+
+</html>

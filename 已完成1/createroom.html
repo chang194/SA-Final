@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>createroom</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/navbar.css">
+    <link rel="stylesheet" href="static/css/button.css">
+    <style>
+
+    </style>
+</head>
+
+<body>
+    <nav class="navbar bg-white navbar-white p-3 navbar-expand-lg">
+        <div class="container">
+            <a href="hotelowner.html" class="navbar-brand">
+                <img src="static/img/LOGO.png" alt="logo">
+            </a>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="static/img/會員.png" alt="會員圖標">
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="memberDropdown">
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h2>新增房型</h2>
+        <form action="/create_room" method="post" enctype="multipart/form-data" id="roomForm">
+            <div class="mb-3">
+                <label for="roomName" class="form-label">房型名稱</label>
+                <input type="text" class="form-control" id="roomName" name="roomName" required>
+            </div>
+            <div class="mb-3">
+                <label for="room_price" class="form-label">房型價格</label>
+                <input type="number" class="form-control" id="room_price" name="room_price" required min="1">
+            </div>
+            <div class="mb-3">
+                <label for="max_capacity" class="form-label">房型容納人數</label>
+                <input type="number" class="form-control" id="max_capacity" name="max_capacity" required min="1">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">房型資訊</label>
+                <textarea class="form-control" id="description" name="description" rows="5" required></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="room_number" class="form-label">該房型房間數</label>
+                <input type="number" class="form-control" id="room_number" name="room_number" required min="1">
+            </div>
+            <div class="mb-3">
+                <label for="roomImage" class="form-label">上傳房型照片</label>
+                <input type="file" class="form-control" id="roomImage" name="roomImage" accept="image/*">
+            </div>
+            <button type="button" class="btn btn-primary" id="submitBtn">新增房型</button>
+        </form>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var submitBtn = document.getElementById('submitBtn');
+            submitBtn.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                var room_type = document.getElementById('roomName').value;
+                var image = 'image_path'
+                var room_number = document.getElementById('room_number').value;
+                var room_price = document.getElementById('room_price').value;
+                var max_capacity = document.getElementById('max_capacity').value;
+                var room_info = document.getElementById('description').value;
+
+                var roomdata = {
+					hotel_id: 1,
+					room_type: room_type,
+					image: image,
+					room_number: room_number,
+					room_price: room_price,
+					max_capacity: max_capacity,
+					room_info: room_info
+                };
+
+                fetch("api/room.do", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(roomdata),
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok.');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Response from server:', data);
+
+                        // Check the success condition (modify this condition based on your server response)
+                        if (data.status === '200') {
+                            // Show success alert
+                            alert('房型新增成功！');
+
+                            // Redirect to createroom_modified.html
+                            window.location.href = 'createroom_modified.html';
+                        } else {
+                            // Show failure alert
+                            alert('房型新增失敗！');
+                        }
+                    })
+                    .catch(error => {
+                        alert('房型新增失敗！請稍後再試');
+                        
+                    });
+            });
+        });
+    </script>
+</body>
+
+</html>
