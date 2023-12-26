@@ -73,19 +73,34 @@ public class RoomController extends HttpServlet {
         JsonReader jsr = new JsonReader(request);
         /** 若直接透過前端AJAX之data以key=value之字串方式進行傳遞參數，可以直接由此方法取回資料 */
         int id = Integer.parseInt(jsr.getParameter("id"));
+        
+        ////////////////////////////hotel_id
+        int hotel_id = 2;
+        
         /** 新建一個JSONObject用於將回傳之資料進行封裝 */
         JSONObject resp = new JSONObject();
 
-        
-        /** 透過RoomHelper物件的getByID()方法自資料庫取回該房型之資料，回傳之資料為JSONObject物件 */
-        JSONObject query = rh.getByID(id);
+        if(hotel_id == -1) {
+        	/** 透過RoomHelper物件的getByID()方法自資料庫取回該房型之資料，回傳之資料為JSONObject物件 */
+        	JSONObject query = rh.getByID(id);
             
-        resp.put("status", "200");
-        resp.put("message", "房型資料取得成功");
-        resp.put("response", query);
+        	resp.put("status", "200");
+        	resp.put("message", "房型資料取得成功");
+        	resp.put("response", query);
         
-        /** 透過JsonReader物件回傳到前端（以JSONObject方式） */
-        jsr.response(resp, response);
+        	/** 透過JsonReader物件回傳到前端（以JSONObject方式） */
+        	jsr.response(resp, response);
+        }
+        else {
+        	JSONObject query = rh.getByHotelID(hotel_id);
+            
+            resp.put("status", "200");
+            resp.put("message", "房型資料取得成功");
+            resp.put("response", query);
+            
+            /** 透過JsonReader物件回傳到前端（以JSONObject方式） */
+            jsr.response(resp, response);
+        }
     }
 
     /**
