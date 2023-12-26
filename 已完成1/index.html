@@ -84,6 +84,8 @@
 </head>
 
 <body>
+
+
   <nav class="navbar bg-white navbar-white p-1 navbar-expand-lg">
     <div class="container">
       <a href="index.html" class="navbar-brand">
@@ -107,7 +109,7 @@
           </button>
           <ul class="dropdown-menu" aria-labelledby="memberDropdown">
             ${isLoggedIn ?
-            `<li><a class="dropdown-item" href="member.html?user_id=${encodeURIComponent(user_id)}">會員資料</a></li>
+            `<li><a class="dropdown-item" onclick="advise_member()"">會員資料</a></li>
             <li><button class="dropdown-item" onclick="logout()">登出</button></li>` :
             `<li><a class="dropdown-item" href="login.html">登入</a></li>`}
           </ul>
@@ -158,76 +160,14 @@
 
   <div class="p-5">
     <div class="container">
-      <h1 class="row-gap">熱門房型</h1>
-      <div class="row g-4 row-gap">
-        <div class="col-lg">
-          <div class="card shadow-lg">
-            <img src="static/img/狗1.jpg" alt="" class="card-img-top">
-            <div class="card-body">
-              <h3 class="card-title">Hotel 1</h3>
-              <p class="card-text">hotel info</p>
-              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg">
-          <div class="card shadow-lg">
-            <img src="static/img/狗2.jpg" alt="" class="card-img-top">
-            <div class="card-body">
-              <h3 class="card-title">Hotel 2</h3>
-              <p class="card-text">hotel info</p>
-              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg">
-          <div class="card shadow-lg">
-            <img src="static/img/狗3.jpg" alt="" class="card-img-top">
-            <div class="card-body">
-              <h3 class="card-title">Hotel 3</h3>
-              <p class="card-text">hotel info</p>
-              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row g-4 row-gap">
-        <div class="col-lg">
-          <div class="card shadow-lg">
-            <img src="static/img/狗4.jpg" alt="" class="card-img-top">
-            <div class="card-body">
-              <h3 class="card-title">Hotel 4</h3>
-              <p class="card-text">hotel info</p>
-              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg">
-          <div class="card shadow-lg">
-            <img src="static/img/狗5.jpg" alt="" class="card-img-top">
-            <div class="card-body">
-              <h3 class="card-title">Hotel 5</h3>
-              <p class="card-text">hotel info</p>
-              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg">
-          <div class="card shadow-lg">
-            <img src="static/img/狗6.jpg" alt="" class="card-img-top">
-            <div class="card-body">
-              <h3 class="card-title">Hotel 6</h3>
-              <p class="card-text">hotel info</p>
-              <a href="hotel.html" class="btn btn-primary">瞭解更多</a>
-            </div>
-          </div>
-        </div>
+      <h1 class="row-gap">熱門旅店</h1>
+      <div class="row g-4 row-gap" id=cardContainer>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="static/js/login.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="static/js/login.js"></script>  
   <script>
 //獲取 URL 中的查詢參數
   const urlParams = new URLSearchParams(window.location.search);
@@ -237,15 +177,97 @@
   var user_id = localStorage.getItem('user_id');
   var user_type = localStorage.getItem('user_type');
 
+
   // 在控制台輸出檢查是否正確獲取到值
   console.log('user_id:', user_id);
   console.log('user_type:', user_type);
   console.log('login_status:', login_status);
-  
   if(login_status == 'true'){}
   else{localStorage.setItem('loggedIn', 'false');}
   
+  const cardContainer = document.getElementById('cardContainer');
+  
+  function displayNotification(message) {
+      alert(message);
+  }
+  
+  document.addEventListener('DOMContentLoaded', function() {
+      getData();
+  });
+  function getData(){
+	var id = -1;
+  	var url = `api/hotel.do?id=${encodeURIComponent(id)}`;
+      fetch(url, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      })
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error('Network response was not ok.');
+              }
+              return response.json();
+          })
+          .then(query => {
+              console.log('Response from server:', query);
+
+              // 'data' 是包含所有旅店資料的 JSON 數組
+              console.log('Hotel Data:', query.response.data);
+              var hotels = query.response.data;
+              for (var i = 0; i < hotels.length; i++) {
+            	    var hotelName = hotels[i].hotelname;
+            	    var location = hotels[i].location;
+            	    var hotel_id = hotels[i].hotel_id;
+            	    console.log("Hotel Name:", hotelName);
+            	    console.log("Location:",location);
+            	    console.log("id:",hotel_id);
+                   	
+
+                    if (cardContainer.children.length % 4 === 0) {
+                    	console.log("111:",hotelName);
+                	    const newRow = createRow();
+                	    cardContainer.appendChild(newRow);
+                	    const card = createHotelCard(hotelName,location,hotel_id);
+                        cardContainer.appendChild(card);
+                  }
+                    else{
+                    	const card = createHotelCard(hotelName,location,hotel_id);
+                        cardContainer.appendChild(card);
+                    }
+            	}
+      	    	
+          })
+          .catch(error => {
+              displayNotification('資料取得失敗！');
+          });
+  }
+  
+  function createHotelCard(hotel_name,hotel_location,hotel_id) {
+	  console.log("id",hotel_id);
+      const cardElement = document.createElement('div');
+      var img = "static/img/狗1.jpg";
+      cardElement.className = 'col-lg';
+      cardElement.innerHTML = `
+	        <div class="card shadow-lg">
+	            <img src="${img}" alt="" class="card-img-top">
+	            <div class="card-body">
+	                <h3 class="card-title">${hotel_name}</h3>
+	                <p class="card-text">${hotel_location}</p>
+	                <a href="hotel.html?hotel_id=${encodeURIComponent(hotel_id)}" class="btn btn-primary">了解更多</a>
+	            </div>
+	        </div>
+    `;
+      return cardElement;
+    }
+  
+  function createRow() {
+	  const row = document.createElement('div');
+	  row.className = 'row g-4 row-gap';
+	  return row;
+	}
   </script>
+  
 </body>
 
 </html>
