@@ -48,6 +48,7 @@ public class Hotel {
 	}
 	public JSONObject getData(){
 		JSONObject jso = new JSONObject();
+		jso.put("hotel_id", getHotel_id());
 		jso.put("hotelname",getHotelName());
 		jso.put("location",getLocation());
 		jso.put("image",getImage());
