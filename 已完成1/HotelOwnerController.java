@@ -111,6 +111,8 @@ public class HotelOwnerController extends HttpServlet {
                 resp.put("status", "200");
                 resp.put("message", "登入成功");
                 resp.put("id", hotelowner_id);
+                JSONObject query = hoh.getByID(hotelowner_id);
+                resp.put("response", query);
             }
         }
         else{
