@@ -107,26 +107,66 @@
           <!-- 房型卡片将会动态添加到这里 -->
         </div>
         	
-        	<style>
+        <style>
+    /* 之前的样式 */
+
+    .card-body {
+        padding: 1rem; /* 调整卡片内边距，可以根据需要调整值 */
+    }
+
     .roomTypesContainer {
-      /* 這裡可以自定義 container 的樣式 */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /* 其他样式 */
     }
 
     .room-card {
-      margin-top: 20px;
+        width: 100%; /* Set the width as per your requirement */
+        max-width: 300px; /* Set a maximum width if needed */
+        margin-top: 20px;
+        overflow: hidden; /* 隐藏溢出的内容 */
     }
-  </style>
+    
+    .card-img-top {
+        object-fit: cover; /* 保持纵横比，覆盖整个容器 */
+        height: 100%; /* 保持高度为 100% */
+        width: 100%; /* 确保宽度为 100% */
+    }
+
+
+    .card.label {
+        padding-inline: 5px;
+    }
+
+    .roomavailable,
+    input[type="number"] {
+        margin-right: 10px; /* 添加间距，可以根据需要调整值 */
+        border-radius: 30px;
+        padding-inline: 5px;
+        width: 80px;
+    }
+
+    .deleteBtn,
+    .updateBtn {
+        margin-top: 10px; /* 添加间距，可以根据需要调整值 */
+    }
+
+    /* 之后的样式 */
+</style>
+
         
         
           <div class="col-6">
-            <div class="card shadow-lg" id="roomTemplate">
+            <div class="card room-card shadow-lg" id="roomTemplate">
               <img src="" alt="" class="card-img-top">
-              <div class="card-body">
+             
+				 <div class="card-body">
                 <h3 class="card-title">房型名稱</h3>
                 <label for="roomavailable">剩餘房間數<input type="number" name="roomavailable" class="roomavailable"></label><br>
                 <button class="btn btn-primary deleteBtn">刪除</button>
                 <a href="#" class="btn btn-primary updateBtn">修改</a>
-              </div>
+              </div>  
             </div>
           </div>
         </div>
@@ -153,14 +193,16 @@
     document.addEventListener('DOMContentLoaded', function () {
       const addRoomButton = document.getElementById('addRoomButton');
       const roomTypesContainer = document.querySelector('.roomTypesContainer');
+      
+      const initialRoomCard = document.getElementById('roomTemplate');
+      initialRoomCard.style.display = 'none';
 
-      var hoteldata = {
-        id: "2",
-        email: "Owner2@gmail.com",
-        password: "22pass"
+      var hotelownerdata = {
+        room_id: -1 ,
+        hotel_id:hotel_id
       };
-	  apiUrl='api/hotelowner.do'
-      const queryString = Object.keys(hoteldata).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(hoteldata[key])}`).join('&');
+	  apiUrl='api/room.do'
+      const queryString = Object.keys(hotelownerdata).map(key => `${encodeURIComponent(key)}=${encodeURIComponent(hotelownerdata[key])}`).join('&');
       const url = `${apiUrl}?${queryString}`;
 
       fetch(url, {
@@ -179,14 +221,13 @@
             console.log(dataArray);
             
             dataArray.forEach(room => {
-				console.log(room.hotel_id);
               const newRoomCard = roomTemplate.cloneNode(true);
         		newRoomCard.style.display = 'block';
-
+        		
         		// 替換為實際的字段
-        		newRoomCard.querySelector('.card-title').textContent = room.room_type;
-        		newRoomCard.querySelector('.roomavailable').value = 9;
-        		newRoomCard.querySelector('.card-img-top').src = room.image;
+        		newRoomCard.querySelector('.card-title').textContent = room.data[0].room_type;
+        		newRoomCard.querySelector('.roomavailable').value = room.data[0].room_number;
+        		newRoomCard.querySelector('.card-img-top').src = room.data[0].image;
 
         		roomTypesContainer.appendChild(newRoomCard);
             });
