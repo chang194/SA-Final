@@ -6,19 +6,35 @@
   <title>Hotel info</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="../css/navbar.css">
-  <link rel="stylesheet" type="text/css" href="../css/button.css">
-  <script src="../js/login.js"></script>
+  <link rel="stylesheet" type="text/css" href="static/css/navbar.css">
+  <link rel="stylesheet" type="text/css" href="static/css/button.css">
+  <script src="static/js/login.js"></script>
   <style>
-
+	
+		/* 調整 .row 標題上方的距離 */
+        h2 {
+            margin-bottom: 50px; /* 調整底邊距，可根據需要調整數值 */
+        }
+        /* 調整下面 .row 的上方距離 */
+        #cardContainer {
+            margin-top: -50px; /* 調整頂邊距，可根據需要調整數值 */
+        }
+        #hotelimage {
+        max-width: 100%;
+        max-height: 200px; /* 根據需要調整最大高度 */
+        width: auto; /* 保持原始寬高比 */
+        height: auto; /* 保持原始寬高比 */
+        display: block; /* 避免底部空白 */
+        margin: 0 auto; /* 讓圖片水平居中 */
+    }
   </style>
 </head>
 
 <body>
   <nav class="navbar bg-white navbar-white p-1 navbar-expand-lg">
     <div class="container-fluid">
-      <a href="index.html" class="navbar-brand">
-        <img src="../pic/LOGO.png" alt="logo">
+      <a href="index.html" class="navbar-brand" id="logoLink">
+        <img src="static/img/LOGO.png" alt="logo">
       </a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
@@ -34,7 +50,7 @@
         <div class="dropdown">
           <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown" data-bs-toggle="dropdown"
             aria-expanded="false">
-            <img src="../pic/會員.png" alt="會員圖標">
+            <img src="static/img/會員.png" alt="會員圖標">
           </button>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="memberDropdown">
             ${isLoggedIn ?
@@ -50,143 +66,273 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-lg-8">
-        <h1 id="hotelname">旅店名稱</h1>
-        <p id="location">旅店地址</p>
-        <p id="hotelphone">旅店電話</p>
-        <p id="intro">簡介</p>
+          <h1 id="hotelname">${hotel_name}</h1>
+          <p id="location">${location}</p>
+          <p id="hotelphone">旅店電話</p>
+          <p id="intro">${intro}</p>
       </div>
       <div class="col-lg-4">
-        <img src="" alt="" id="hotelimage" style="display: grid;">
+            <img src="${hotel_image}" alt="" id="hotelimage" style="max-width: 100%; height: auto; display: block;">
       </div>
     </div>
     <div class="row">
       <h2>房型介紹</h2>
-      <div class="row" id="roomDetails">
-        <div class="col-md-6">
-          <h4 id="room_type"></h4>
-          <img src="" alt="" id="image">
-          <p id="room_info"></p>
-          <p id="max_capacity"></p>
-          <p id="room_price"></p>
-          <button class="btn btn-primary addToCart">加入購物車</button>
-        </div>
+      <div class="row g-4 row-gap" id=cardContainer>
       </div>
     </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
-    function fetchHotelInfo(hotel_id) {
-      return fetch(`api/hotel.do?id=${hotel_id}`)
-        .then(res => res.json())
-        .then(data => data);
-    }
+	//獲取 URL 中的查詢參數
+  	const urlParams = new URLSearchParams(window.location.search);
 
-    function fetchRoomData(hotel_id) {
-      return fetch(`api/room.do?hotelid=${hotel_id}`)
-        .then(res => res.json())
-        .then(data => {
-          const roomIds = data.rooms.map(room => room.id); // 获取所有房型的 ID
-          return { roomIds, data };
-        });
-    }
+  	// 使用 get 方法根據參數名獲取值
+ 	const login_status = urlParams.get('login_status');
+  	var user_id = localStorage.getItem('user_id');
+  	var user_type = localStorage.getItem('user_type');
+  	const hotel_id = urlParams.get('hotel_id');
+  	
+   	console.log('user_id:', user_id);
+   	console.log('login_status:', login_status);
+  
+  	const cardContainer = document.getElementById('cardContainer');
+  
+	  document.addEventListener('DOMContentLoaded', function() {
+	      getData();
+	      getRoomData();
+	  }); 
+	  
+	  function displayNotification(message) {
+	      alert(message);
+	  }
+	  
+	  function getData(){
+		  var id = hotel_id;
+		  var url = `api/hotel.do?id=${encodeURIComponent(id)}`;
+		  fetch(url, {
+	          method: 'GET',
+	          headers: {
+	              'Content-Type': 'application/json',
+	          },
+	      })
+	          .then(response => {
+	              if (!response.ok) {
+	                  throw new Error('Network response was not ok.');
+	              }
+	              return response.json();
+	          })
+	          .then(query => {
+	              console.log('Response from server:', query);
+	              var dataArray = query.response.data;
 
-    function displayHotelInfo(data) {
-      document.getElementById('hotelname').textContent = data.hotelname;
-      document.getElementById('location').textContent = data.location;
-      document.getElementById('hotelimage').textContent = data.image;
-      //document.getElementById('hotelphone').textContent = data.phone;
-      document.getElementById('intro').textContent = data.intro
-    }
+	                 // 檢查 data 是否為陣列且有資料
+	                 	if (Array.isArray(dataArray) && dataArray.length > 0) {  
+		                   // 從第一筆資料中取得 email
+		                  	var firstData = dataArray[0];
+		                  	var hotelname = firstData.hotelname;
+		                  	var hotel_image = firstData.image;
+		                  	var location = "旅店地址 : " + firstData.location;
+		                  	var intro = "旅店簡介 : " + firstData.introduction;
+	
+		                   // 將 email 資料設定到你的 HTML 元素
+		                   document.getElementById('hotelname').innerText = hotelname;
+		                   var hotelImageElement = document.getElementById('hotelimage');
+		                   hotelImageElement.src = hotel_image;
+		                   document.getElementById('location').innerText = location;
+		                   document.getElementById('intro').innerText = intro;
+	                 	}
+	      	    	
+	          })
+	          .catch(error => {
+	              displayNotification('資料取得失敗！');
+	          });
+	  }
+	  
+	  function getRoomData(){
+		  var id = hotel_id;
+		  var room_id = -1;
+		  var url = `api/room.do?hotel_id=${encodeURIComponent(id)}&room_id=${encodeURIComponent(room_id)}`;
+		  fetch(url, {
+	          method: 'GET',
+	          headers: {
+	              'Content-Type': 'application/json',
+	          },
+	      })
+	          .then(response => {
+	              if (!response.ok) {
+	                  throw new Error('Network response was not ok.');
+	              }
+	              return response.json();
+	          })
+	          .then(query => {
+	              console.log('Response from server:', query);
 
-    function displayRoomData(data) {
-      var roomDetailsContainer = document.getElementById("roomDetails");
+	              // 'data' 是包含所有旅店資料的 JSON 數組
+	              console.log('Room Data:', query.response.data);
+	              var rooms = query.response.data
+	              
+	              
+	           	// 创建一个新的行容器
+	              let currentRow = createRow();
+	              
+	              for (var i = 0; i < rooms.length; i++) {
+	            	  var room = rooms[i].data;
+	            	  console.log('Rooms:', room);
+	            	  for(var j = 0;j < room.length;j++){
+	            		  var roomtype = room[j].room_type;
+		                  var maxcapacity = room[j].max_capacity;
+		                  var price = room[j].room_price;
+		                  var image = room[j].image;
+		                  var room_id = room[j].room_id;
+		                  console.log("Room type:", roomtype);
+		                  console.log("Max:", maxcapacity);
+		                  console.log("Price:",price);
+		                  console.log("Room id:",room_id);
 
-      data.rooms.forEach(room => {
-        const roomDiv = document.createElement("div");
-        roomDiv.classList.add("col-md-6");
+		                  // 如果当前行已经有了三个卡片，创建新的行容器
+		                  if (currentRow.children.length === 4) {
+		                      cardContainer.appendChild(currentRow);
+		                      currentRow = createRow(); // 创建新的行
+		                  }
 
-        roomDiv.innerHTML = `
-      <h4>${room.room_type}</h4>
-      <img src=${room.image}>
-      <p>${room.room_info}</p>
-      <p>${room.max_capacity}人房</p>
-      <p>${room.room_price} 元/晚</p>
-      <button class="btn btn-primary addToCart" data-room-id="${room.id}">加入購物車</button>
-    `;
+		                  // 创建旅店卡片
+		                  const card = createRoomCard(roomtype, maxcapacity, price, image,room_id);
 
-        roomDetailsContainer.appendChild(roomDiv);
-      });
+		                  // 将卡片添加到当前行容器中
+		                  currentRow.appendChild(card);
+	            	  }
+	            	  
+	              }
 
+	              // 确保最后一行也被添加到容器中
+	              cardContainer.appendChild(currentRow);
+	      	    	
+	          })
+	          .catch(error => {
+	              displayNotification('資料取得失敗！');
+	          });
+	  }
+	  
+	  function createRoomCard(roomtype, maxcapacity, price, image,room_id) {
+	      const cardElement = document.createElement('div');
+	      console.log("123:",room_id);
+	      var max = "房型人數 : " + maxcapacity;
+	      var roomprice = "價格 : " + price;
+	      var img = image;
+	      
+	      cardElement.style.width = '350px';  // 保持与图片宽度一致
+	      cardElement.style.height = '450px';  // 保持与图片高度一致
 
-      roomDetailsContainer.querySelectorAll('.addToCart').forEach(button => {
-        button.addEventListener('click', function () {
-          var room_id = button.getAttribute('data-room-id');
-          // 通过 roomId 进行后续操作，比如向后端发送请求等等
-          // 例如：fetchRoomDetails(roomId);
-        });
-      });
-    }
+	      // 设置盒子模型计算方式为 border-box
+	      cardElement.style.boxSizing = 'border-box';
 
-    window.addEventListener('load', () => {
-      fetchHotelId()
-        .then(hotel_id => {
-          fetchHotelInfo(hotel_id)
-            .then(data => {
-              displayHotelInfo(data);
+	      // 使用 Flexbox 布局
+	   	  cardElement.style.flex = '0 0 auto'; // 设置为1，表示每个卡片的宽度相等，但不拉伸
+	      cardElement.style.flexDirection = 'column'; // 垂直方向排列
+	      
+	      cardElement.className = 'col-lg';
+	      cardElement.innerHTML = `
+	          <div class="card shadow-lg">
+	              <img src="${img}" alt="" class="card-img-top" style="height: 180px; object-fit: cover;">
+	              <div class="card-body" style="height: 100%;">
+	                  <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+	                      <h3 class="card-title">${roomtype}</h3>
+	                      <p class="card-text">${max}</p>
+	                      <p class="card-text">${roomprice}</p>
+	                      <label for="number">數量:</label>
+	                      <input type="number" class="form-control" id="num" required min=0>
+	                      <a class="btn btn-primary" onclick="addToCart(this,'${room_id}')">加入購物車</a>
+	                  </div>
+	              </div>
+	          </div>
+	      `;
+	      return cardElement;
+	    }
+	  
+	  function createRow() {
+		  const row = document.createElement('div');
+		  row.className = 'row g-4 row-gap';
+		  
+			// 使用 Flexbox 布局
+		    row.style.display = 'flex';
+		    row.style.flexDirection = 'row';
+		    row.style.flexWrap = 'wrap';
+		    row.style.alignItems = 'center'; // 垂直方向居中
+		    row.style.marginLeft = '-10px'; // 负 margin 抵消默认间距
+		    row.style.marginRight = '-10px'; // 负 margin 抵消默认间距
+		    
+		  return row;
+		}
+	  
+	  
+	  function addToCart(button,room_id) {
+		    if(login_status != true){
+		    	alert('請先登入');
+		    	window.location.href = 'login.html';
+		    	return false;
+		    }
+		    
+		    var cardElement = button.parentElement;
+		    
+		    var num = cardElement.querySelector('.form-control#num').value;
+		    var customer_id = user_id;
+	         if(!num || num == 0){
+	        	 console.log("錯誤");
+	        	 alert("請填入數量");
+	        	 return false;
+	         }
+		    console.log("room",room_id);
+		    console.log("customer",customer_id);
+		    console.log("num",num);
+		    
+		    var CartData = {
+	            	customer_id: customer_id,
+	                room_id: room_id,
+	                order_number: num,
+	            };
+		    apiUrl = 'api/shoppingcart.do';
+		    fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(CartData),
             })
-            .catch(error => {
-              console.error('獲取旅店信息出錯:', error);
-            });
-
-          fetchRoomData(hotel_id)
-            .then(({ room_id, data }) => {
-              displayRoomData(data);
-
-              document.querySelectorAll('.addToCart').forEach((button, index) => {
-                button.addEventListener('click', function () {
-                  const roomId = roomIds[index]; // 通过索引获取相应房型的 ID
-                  // 通过 roomId 进行后续操作，比如向后端发送请求等等
-                  // 例如：fetchRoomDetails(roomId);
+                .then(response => {
+                	if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                	console.log('Response from server:', data);
+                	
+                	if (data.status === '200'){
+                		alert('加入購物車成功');
+                	}
+                	else{
+                		alert("加入失敗");
+                	}
+                    
+                })
+                .catch(error => {
+                    console.error('錯誤！', error);
                 });
-              });
-            })
-            .catch(error => {
-              console.error('獲取旅店信息出錯:', error);
-            });
-        });
-    });
-
-
-    var isLoggedIn = true; // Default login status
-    var cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart from localStorage
-    function login(username, password) {
-      // Logic for user login
-    }
-    function logout() {
-      // Logic for user logout
-    }
-
-    // Function to add room to cart
-    function addToCart(room) {
-      fetch('/', {
-        method: '',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ roomId: room.id }), // Assuming room.id exists
-      })
-        .then(response => {
-          if (response.ok) {
-            // Perform actions for successful addition to cart
-          } else {
-            // Handle failed addition to cart
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-        });
-    }
+        }
+	  
+	  document.addEventListener("DOMContentLoaded", function() {
+		    // 在這裡執行你的其他初始化邏輯
+		});  
+  
+    var logoLink = document.getElementById('logoLink');
+    // 修改链接的 href 属性，传递 loginStatus 参数
+   	logoLink.href = 'index.html?login_status=' + 'true';
+   	
+    
 
 
   </script>
