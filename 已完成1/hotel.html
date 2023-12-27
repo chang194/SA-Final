@@ -10,14 +10,30 @@
   <link rel="stylesheet" type="text/css" href="static/css/button.css">
   <script src="static/js/login.js"></script>
   <style>
-
+	
+		/* 調整 .row 標題上方的距離 */
+        h2 {
+            margin-bottom: 50px; /* 調整底邊距，可根據需要調整數值 */
+        }
+        /* 調整下面 .row 的上方距離 */
+        #cardContainer {
+            margin-top: -50px; /* 調整頂邊距，可根據需要調整數值 */
+        }
+        #hotelimage {
+        max-width: 100%;
+        max-height: 200px; /* 根據需要調整最大高度 */
+        width: auto; /* 保持原始寬高比 */
+        height: auto; /* 保持原始寬高比 */
+        display: block; /* 避免底部空白 */
+        margin: 0 auto; /* 讓圖片水平居中 */
+    }
   </style>
 </head>
 
 <body>
   <nav class="navbar bg-white navbar-white p-1 navbar-expand-lg">
     <div class="container-fluid">
-      <a href="index.html" class="navbar-brand">
+      <a href="index.html" class="navbar-brand" id="logoLink">
         <img src="static/img/LOGO.png" alt="logo">
       </a>
       <div class="collapse navbar-collapse">
@@ -50,20 +66,18 @@
   <div class="container mt-5">
     <div class="row">
       <div class="col-lg-8">
-        <h1 id="hotelname">${hotel_name}</h1>
-        <p id="location">${location}</p>
-        <p id="hotelphone">旅店電話</p>
-        <p id="intro">${intro}</p>
+          <h1 id="hotelname">${hotel_name}</h1>
+          <p id="location">${location}</p>
+          <p id="hotelphone">旅店電話</p>
+          <p id="intro">${intro}</p>
       </div>
       <div class="col-lg-4">
-        <img src="" alt="" id="hotelimage" style="display: grid;">
+            <img src="${hotel_image}" alt="" id="hotelimage" style="max-width: 100%; height: auto; display: block;">
       </div>
     </div>
     <div class="row">
       <h2>房型介紹</h2>
       <div class="row g-4 row-gap" id=cardContainer>
-        <div class="col-md-6">
-        </div>
       </div>
     </div>
   </div>
@@ -73,8 +87,16 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script>
+	//獲取 URL 中的查詢參數
+  	const urlParams = new URLSearchParams(window.location.search);
+
+  	// 使用 get 方法根據參數名獲取值
+ 	const login_status = urlParams.get('login_status');
+  	var user_id = localStorage.getItem('user_id');
+  	var user_type = localStorage.getItem('user_type');
+  	const hotel_id = urlParams.get('hotel_id');
   
-  const cardContainer = document.getElementById('cardContainer');
+  	const cardContainer = document.getElementById('cardContainer');
   
 	  document.addEventListener('DOMContentLoaded', function() {
 	      getData();
@@ -109,11 +131,14 @@
 		                   // 從第一筆資料中取得 email
 		                  	var firstData = dataArray[0];
 		                  	var hotelname = firstData.hotelname;
+		                  	var hotel_image = firstData.image;
 		                  	var location = "旅店地址 : " + firstData.location;
-		                  	var intro = "旅店簡介 : " + firstData.intro;
+		                  	var intro = "旅店簡介 : " + firstData.introduction;
 	
 		                   // 將 email 資料設定到你的 HTML 元素
 		                   document.getElementById('hotelname').innerText = hotelname;
+		                   var hotelImageElement = document.getElementById('hotelimage');
+		                   hotelImageElement.src = hotel_image;
 		                   document.getElementById('location').innerText = location;
 		                   document.getElementById('intro').innerText = intro;
 	                 	}
@@ -158,18 +183,19 @@
 	            		  var roomtype = room[j].room_type;
 		                  var maxcapacity = room[j].max_capacity;
 		                  var price = room[j].room_price;
+		                  var image = room[j].image;
 		                  console.log("Room type:", roomtype);
 		                  console.log("Max:", maxcapacity);
 		                  console.log("Price:",price);
 
 		                  // 如果当前行已经有了三个卡片，创建新的行容器
-		                  if (currentRow.children.length === 3) {
+		                  if (currentRow.children.length === 4) {
 		                      cardContainer.appendChild(currentRow);
 		                      currentRow = createRow(); // 创建新的行
 		                  }
 
 		                  // 创建旅店卡片
-		                  const card = createRoomCard(roomtype, maxcapacity, price);
+		                  const card = createRoomCard(roomtype, maxcapacity, price, image);
 
 		                  // 将卡片添加到当前行容器中
 		                  currentRow.appendChild(card);
@@ -186,15 +212,14 @@
 	          });
 	  }
 	  
-	  function createRoomCard(roomtype, maxcapacity, price) {
+	  function createRoomCard(roomtype, maxcapacity, price, image) {
 	      const cardElement = document.createElement('div');
-	      var max = "最大人數 : " + maxcapacity;
+	      var max = "房型人數 : " + maxcapacity;
 	      var roomprice = "價格 : " + price;
-	      var img = "static/img/狗6.jpg";
+	      var img = image;
 	      
-	      // 设置卡片容器的固定宽度和高度
-	      cardElement.style.width = '370px';
-	      cardElement.style.height = '460px';
+	      cardElement.style.width = '350px';  // 保持与图片宽度一致
+	      cardElement.style.height = '450px';  // 保持与图片高度一致
 
 	      // 设置盒子模型计算方式为 border-box
 	      cardElement.style.boxSizing = 'border-box';
@@ -205,8 +230,8 @@
 	      
 	      cardElement.className = 'col-lg';
 	      cardElement.innerHTML = `
-	          <div class="card shadow-lg" style="height: 100%;">
-	              <img src="${img}" alt="" class="card-img-top">
+	          <div class="card shadow-lg">
+	              <img src="${img}" alt="" class="card-img-top" style="height: 180px; object-fit: cover;">
 	              <div class="card-body" style="height: 100%;">
 	                  <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
 	                      <h3 class="card-title">${roomtype}</h3>
@@ -275,20 +300,12 @@
 
     var isLoggedIn = true; // Default login status
     var cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart from localStorage
-
-    
-  //獲取 URL 中的查詢參數
-    const urlParams = new URLSearchParams(window.location.search);
-    const hotel_id = urlParams.get('hotel_id');
-    console.log("hotel",hotel_id);
     
   
     var logoLink = document.getElementById('logoLink');
-    var user_type = localStorage.getItem('user_type');
     // 修改链接的 href 属性，传递 loginStatus 参数
-    if(user_type == 'customer'){
-   	 logoLink.href = 'index.html?login_status=' + 'true';
-    }
+   	logoLink.href = 'index.html?login_status=' + 'true';
+    
 
 
   </script>
