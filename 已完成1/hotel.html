@@ -95,6 +95,9 @@
   	var user_id = localStorage.getItem('user_id');
   	var user_type = localStorage.getItem('user_type');
   	const hotel_id = urlParams.get('hotel_id');
+  	
+   	console.log('user_id:', user_id);
+   	console.log('login_status:', login_status);
   
   	const cardContainer = document.getElementById('cardContainer');
   
@@ -184,9 +187,11 @@
 		                  var maxcapacity = room[j].max_capacity;
 		                  var price = room[j].room_price;
 		                  var image = room[j].image;
+		                  var room_id = room[j].room_id;
 		                  console.log("Room type:", roomtype);
 		                  console.log("Max:", maxcapacity);
 		                  console.log("Price:",price);
+		                  console.log("Room id:",room_id);
 
 		                  // 如果当前行已经有了三个卡片，创建新的行容器
 		                  if (currentRow.children.length === 4) {
@@ -195,7 +200,7 @@
 		                  }
 
 		                  // 创建旅店卡片
-		                  const card = createRoomCard(roomtype, maxcapacity, price, image);
+		                  const card = createRoomCard(roomtype, maxcapacity, price, image,room_id);
 
 		                  // 将卡片添加到当前行容器中
 		                  currentRow.appendChild(card);
@@ -212,8 +217,9 @@
 	          });
 	  }
 	  
-	  function createRoomCard(roomtype, maxcapacity, price, image) {
+	  function createRoomCard(roomtype, maxcapacity, price, image,room_id) {
 	      const cardElement = document.createElement('div');
+	      console.log("123:",room_id);
 	      var max = "房型人數 : " + maxcapacity;
 	      var roomprice = "價格 : " + price;
 	      var img = image;
@@ -237,14 +243,13 @@
 	                      <h3 class="card-title">${roomtype}</h3>
 	                      <p class="card-text">${max}</p>
 	                      <p class="card-text">${roomprice}</p>
-	                      <label for="datepicker">選擇日期:</label>
-	                      <input type="date" class="form-control" id="date_range" required>
-	                      <a class="btn btn-primary" onclick="addToCart()">加入購物車</a>
+	                      <label for="number">數量:</label>
+	                      <input type="number" class="form-control" id="num" required min=0>
+	                      <a class="btn btn-primary" onclick="addToCart(this,'${room_id}')">加入購物車</a>
 	                  </div>
 	              </div>
 	          </div>
 	      `;
-
 	      return cardElement;
 	    }
 	  
@@ -263,48 +268,70 @@
 		  return row;
 		}
 	  
-	  $(function() {
-		  $('#date_range').daterangepicker({
-		    opens: 'left', // 可以設定日曆的顯示位置
-		    startDate: moment().subtract(1, 'days'), // 預設開始日期（在這裡是一天前）
-		    endDate: moment(), // 預設結束日期（在這裡是今天）
-		    ranges: {
-		      '今天': [moment(), moment()],
-		      '昨天': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-		      '過去7天': [moment().subtract(6, 'days'), moment()],
-		      '過去30天': [moment().subtract(29, 'days'), moment()],
-		      '本月': [moment().startOf('month'), moment().endOf('month')],
-		      '上個月': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+	  
+	  function addToCart(button,room_id) {
+		    if(!login_status){
+		    	alert('請先登入');
+		    	window.location.href = 'login.html';
+		    	return false;
 		    }
-		  }, function(start, end, label) {
-		    // 選擇日期後的回調函數
-		    console.log('開始日期: ' + start.format('YYYY-MM-DD'));
-		    console.log('結束日期: ' + end.format('YYYY-MM-DD'));
-		  });
-		});
-	  function addToCart() {
-		    // 獲取選擇的日期
-		    var selectedDate = document.getElementById('bth').value;
-
-		    // 假設有一個用於顯示購物車內容的元素，這裡是示例，請根據實際情況進行修改
-		    var cartContentElement = document.getElementById('cart-content');
-
-		    // 將選擇的日期信息添加到購物車內容中
-		    var cartItem = document.createElement('div');
-		    cartItem.innerHTML = `Selected Date: ${selectedDate}`;
-		    cartContentElement.appendChild(cartItem);
-		}
-
-
-
-
-    var isLoggedIn = true; // Default login status
-    var cart = JSON.parse(localStorage.getItem('cart')) || []; // Get cart from localStorage
-    
+		    
+		    var cardElement = button.parentElement;
+		    
+		    var num = cardElement.querySelector('.form-control#num').value;
+		    var customer_id = user_id;
+	         if(!num || num == 0){
+	        	 console.log("錯誤");
+	        	 alert("請填入數量");
+	        	 return false;
+	         }
+		    console.log("room",room_id);
+		    console.log("customer",customer_id);
+		    console.log("num",num);
+		    
+		    var CartData = {
+	            	customer_id: customer_id,
+	                room_id: room_id,
+	                order_number: num,
+	            };
+		    apiUrl = 'api/shoppingcart.do';
+		    fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(CartData),
+            })
+                .then(response => {
+                	if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                	console.log('Response from server:', data);
+                	
+                	if (data.status === '200'){
+                		alert('加入購物車成功');
+                	}
+                	else{
+                		alert("加入失敗");
+                	}
+                    
+                })
+                .catch(error => {
+                    console.error('錯誤！', error);
+                });
+        }
+	  
+	  document.addEventListener("DOMContentLoaded", function() {
+		    // 在這裡執行你的其他初始化邏輯
+		});  
   
     var logoLink = document.getElementById('logoLink');
     // 修改链接的 href 属性，传递 loginStatus 参数
    	logoLink.href = 'index.html?login_status=' + 'true';
+   	
     
 
 
