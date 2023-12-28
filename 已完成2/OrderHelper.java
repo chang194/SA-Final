@@ -74,10 +74,9 @@ public class OrderHelper {
                 LocalDate checkin_date = sqlDate.toLocalDate();
                 sqlDate = rs.getDate("checkout_date");
 	            LocalDate checkout_date = sqlDate.toLocalDate();
-	            String email = rs.getString("email");
                 
                 /** 將旅店資料產生一個新Order物件 */
-                o = new Order(id, room_id, customer_id, order_number, order_price, guest_number, booking_date, checkin_date, checkout_date,email);
+                o = new Order(id, room_id, customer_id, order_number, order_price, guest_number, booking_date, checkin_date, checkout_date);
                 jsa.put(o.getData());
             }
 
@@ -162,7 +161,7 @@ public class OrderHelper {
                     orderdetail.put("booking_date", booking_date);
                     orderdetail.put("checkin_date", checkin_date);
     
-                    String customerSql = "SELECT * FROM `mydb`.`tbl_Customer` WHERE `customer_id` = ?";
+                    String customerSql = "SELECT * FROM `mydb`.`tbl_customer` WHERE `customer_id` = ?";
                     pres = conn.prepareStatement(customerSql);
                     pres.setInt(1, customer_id);
                     rsCustomer = pres.executeQuery();
@@ -220,7 +219,7 @@ public class OrderHelper {
             /** 取得資料庫之連線 */
             conn = DBMgr.getConnection();
             /** SQL指令 */
-            String sql = "SELECT room_id FROM `mydb`.`tbl_Order` WHERE customer_id = ?";
+            String sql = "SELECT * FROM `mydb`.`tbl_Order` WHERE customer_id = ?";
             
             // 使用 PreparedStatement 預防 SQL 注入
             pres = conn.prepareStatement(sql);
