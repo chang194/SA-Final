@@ -35,9 +35,6 @@
             </a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="" class="nav-link">旅遊社群</a>
-                    </li>
                     <li class="nav-item" id="myOrdersNavItem" style="display: none;">
                         <a href="myorder.html" class="nav-link">我的訂單</a>
                     </li>
@@ -88,9 +85,7 @@
         }
         
         function getData() {
-        	
-            var id = user_id;
-            var url = `api/order.do?user_id=${encodeURIComponent(id)}`;
+            var url = `api/order.do?customer_id=${encodeURIComponent(user_id)}&hotel_id=${encodeURIComponent(-1)}`;
 
             fetch(url, {
                 method: 'GET',
@@ -114,43 +109,31 @@
                     let currentRow = createRow();
 
                     for (var i = 0; i < scs.length; i++) {
-                        var order_id = scs[i].order_id;//可以當訂單編號
-                        var ordernumber = scs[i].order＿number;//訂房數量
-                        var hotel_id = scs[i].hotel_id;//
-                        var hotelname = scs[i].hotelname;
-                        var room_id = scs[i].room_id;//
-                        var room = scs[i].room_type;
-                        var customer_id = scs[i].customer_id;//
+                        var order_id = scs[i].data[0].order_id;//可以當訂單編號
+                        var order＿number = scs[i].data[0].order＿number;//訂房數量
+                        //var hotel_id = scs[i].data[0].hotel_id;//
+                        hotel_id = '還沒有';
+                        //var hotelname = scs[i].data[0].hotelname;
+                        hotel_name = '還沒有'
+                        var room_id = scs[i].data[0].room_id;//
+                        //var room_type = scs[i].data[0].room_type;
+                        room_type = '還沒有';
+                        var customer_id = scs[i].data[0].customer_id;//
                         //var booker = scs[i].booker;//訂房者姓名
-                        var guest_number = scs[i].guest_number;
+                        var guest_number = scs[i].data[0].guest_number;
                         //var booking = scs[i].booking_date;
-                        var date1 = scs[i].checkin_date;
-                        var date2 = scs[i].checkout_date;
-                        var price = scs[i].order_price;
-                        var image = scs[i].hotel_image;
-
-                        console.log("order_id", order_id);
-                        console.log("ordernumber", ordernumber);
-                        console.log("hotel", hotel_id);
-                        console.log("Hotel Name:", hotelname);
-                        console.log("room_id", room_id);
-                        console.log("room:", room);
-                        console.log("customer_id", customer_id);
-                        //console.log("booker", booker);
-                        console.log("guest_number", guest_number);
-                        //consple.log("booking", booking_date);
-                        console.log("date1", date1);
-                        console.log("date2", date2);
-                        console.log("price", price);
-                        console.log("image", image);
-
+                        var checkin_date = scs[i].data[0].checkin_date;
+                        var checkout_date = scs[i].data[0].checkout_date;
+                        var order_price = scs[i].data[0].order_price;
+                        //var image = scs[i].data[0].hotel_image;
+                        var image = 'static/img/帆船飯店.png';
 
                         if (currentRow.children.length === 3) {
                             cardContainer.appendChild(currentRow);
                             currentRow = createRow();
                         }
 
-                        const card = createMyOrder(order_id, ordernumber, hotel_id, hotelname, room_id, room, customer_id, guest_number, date1, date2, price, image);
+                        const card = createMyOrder(order_id, order_number, hotel_id, hotel_name, room_id, room_type, customer_id, guest_number, checkin_date, checkout_date, order_price, image);
 
                         currentRow.appendChild(card);
                     }
