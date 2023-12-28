@@ -50,7 +50,7 @@ public class OrderHelper {
             /** 取得資料庫之連線 */
             conn = DBMgr.getConnection();
             /** SQL指令 */
-            String sql = "SELECT * FROM `mydb`.`tbl_Order` WHERE `order_id` = ? ORDER BY `order_id` DESC";
+            String sql = "SELECT * FROM `mydb`.`tbl_Order` WHERE `order_id` = ?";
             
             /** 將參數回填至SQL指令當中，若無則不用只需要執行 prepareStatement */
             pres = conn.prepareStatement(sql);
@@ -264,7 +264,7 @@ public class OrderHelper {
             /** 取得資料庫之連線 */
             conn = DBMgr.getConnection();
             /** SQL指令 */
-            String sql = "SELECT * FROM `mydb`.`tbl_Order` WHERE customer_id = ?";
+            String sql = "SELECT * FROM `mydb`.`tbl_Order` WHERE customer_id = ? ORDER BY `order_id` DESC";;
             
             // 使用 PreparedStatement 預防 SQL 注入
             pres = conn.prepareStatement(sql);
