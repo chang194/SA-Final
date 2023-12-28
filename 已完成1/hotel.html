@@ -21,11 +21,12 @@
         }
         #hotelimage {
         max-width: 100%;
-        max-height: 200px; /* 根據需要調整最大高度 */
+        max-height: 300px; /* 根據需要調整最大高度 */
         width: auto; /* 保持原始寬高比 */
         height: auto; /* 保持原始寬高比 */
         display: block; /* 避免底部空白 */
         margin: 0 auto; /* 讓圖片水平居中 */
+        margin-right: 120px; /* 正確的屬性名稱 */
     }
   </style>
 </head>
@@ -65,14 +66,14 @@
 
   <div class="container mt-5">
     <div class="row">
-      <div class="col-lg-8">
+      <div class="col-lg-7">
           <h1 id="hotelname">${hotel_name}</h1>
           <p id="location">${location}</p>
           <p id="hotelphone">旅店電話</p>
           <p id="intro">${intro}</p>
       </div>
-      <div class="col-lg-4">
-            <img src="${hotel_image}" alt="" id="hotelimage" style="max-width: 100%; height: auto; display: block;">
+      <div class="col-lg-5">
+            <img src="${hotel_image}" alt="" id="hotelimage" style="max-width: 2000px; width: auto; height: auto; display: block;">
       </div>
     </div>
     <div class="row">
@@ -219,7 +220,6 @@
 	  
 	  function createRoomCard(roomtype, maxcapacity, price, image,room_id) {
 	      const cardElement = document.createElement('div');
-	      console.log("123:",room_id);
 	      var max = "房型人數 : " + maxcapacity;
 	      var roomprice = "價格 : " + price;
 	      var img = image;
@@ -270,7 +270,8 @@
 	  
 	  
 	  function addToCart(button,room_id) {
-		    if(!login_status){
+		  
+		    if(login_status != 'true'){
 		    	alert('請先登入');
 		    	window.location.href = 'login.html';
 		    	return false;
@@ -294,7 +295,7 @@
 	                room_id: room_id,
 	                order_number: num,
 	            };
-		    apiUrl = 'api/shoppingcart.do';
+		    apiUrl = `api/shoppingcart.do`;
 		    fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -331,9 +332,6 @@
     var logoLink = document.getElementById('logoLink');
     // 修改链接的 href 属性，传递 loginStatus 参数
    	logoLink.href = 'index.html?login_status=' + 'true';
-   	
-    
-
 
   </script>
 
