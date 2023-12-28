@@ -362,11 +362,11 @@ public class OrderHelper {
             System.out.println(exexcute_sql);
             
             ////////修改空房紀錄
-            sql = "UPDATE `mydb`.`tbl_roomavailability` " +
+            String sql_room = "UPDATE `mydb`.`tbl_roomavailability` " +
             "SET `available_quantity` = `available_quantity` - ? " +
-            "WHERE `room_id` = ? AND `date` >= ? AND `date` < ?";
+            "WHERE `room_id` = ? AND `date` BETWEEN ? AND ?";
 
-            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            PreparedStatement preparedStatement = conn.prepareStatement(sql_room);
             // 设置参数
             preparedStatement.setInt(1, order_number);
             preparedStatement.setInt(2, room_id);
