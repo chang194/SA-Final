@@ -1,26 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<!--結帳完還無法跳轉-->
 
 <head>
   <meta charset="UTF-8">
   <title>checkout</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" type="text/css" href="../css/navbar.css">
-  <link rel="stylesheet" type="text/css" href="../css/button.css">
-  <script src="../js/login.js"></script>
+  <link rel="stylesheet" type="text/css" href="static/css/navbar.css">
+  <link rel="stylesheet" type="text/css" href="static/css/button.css">
+  <script src="static/js/login.js"></script>
   <style>
-    /* General Styles */
-    s body {
-      background-color: #a3bf9f;
-      color: #364f37;
-    }
-
-    .container {
-      padding: auto 15px;
-    }
-
     h2,
     h1,
     p,
@@ -52,18 +41,6 @@
       background-color: #fff;
       margin-inline-start: 5px;
       margin-bottom: 8px;
-    }
-
-    .custom-content {
-      border-radius: 15px;
-      background-color: #fff;
-      padding: 30px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .custom-section {
-      margin-top: 50px;
-      margin-bottom: 50px;
     }
 
     .custom-button {
@@ -119,109 +96,75 @@
       </div>
   </nav>
 
-  <div class="container text-center custom-section">
+  <div class="container mt-5">
     <div class="row">
-      <div class="col-12 col-md-6">
-        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
-          <div>
-            <h2>Hotel name</h2>
-            <hr>
-            <p>Hotel address</p>
-            <p>hotel info：</p>
-          </div>
+      <div class="col-md-6">
+        <div class="custom-content p-4 border">
+          <h1 class="hotelname">${hotelname}</h1>
+          <hr>
+          <p class="location">${location}</p>
         </div>
       </div>
-      <div class="col-12 col-md-6">
-        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
-          <div>
-            <h2>Room name</h2>
-            <hr>
-            <p>Room info</p>
-            <label for="creditcard">請選擇房間數量：
-              <input type="number" name="roomrum" id="roomnum" min="1" max="roomavaliable">
-            </label>
-          </div>
+      <div class="col-md-6">
+        <div class="custom-content p-4 border">
+          <h2 class="roomtype">${room_type}</h2>
+          <hr>
+          <label for="number">請選擇房間數量：</label>
+          <input type="number" name="roomrum" id="${ordernumber}" min="1" max="roomavaliable" class="form-control">
         </div>
       </div>
     </div>
   </div>
 
-
-  <div class="container text-center custom-section">
+  <div class="container mt-4">
     <div class="row">
-      <div class="col-4 d-flex align-items-stretch">
-        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
-          <form>
-            <div class="mb-1 text-center">
-              <label for="username" class="form-label">訂房者</label>
-              <input type="text" class="form-control" id="username" placeholder="輸入訂房者名稱">
-            </div>
-            <div class="mb-1 text-center">
-              <label for="c-email" class="form-label">電子郵件</label>
-              <input type="email" class="form-control" id="c-email" placeholder="輸入電子郵件">
-            </div>
-          </form>
+      <div class="col-md-4">
+        <form class="p-4 border">
+          <label for="username" class="form-label">訂房者</label>
+          <input type="text" class="form-control mb-3" id="${booker}" placeholder="輸入訂房者名稱">
+          <label for="c-email" class="form-label">聯絡電話</label>
+          <input type="email" class="form-control" id="${phone}" placeholder="請輸入聯絡電話">
+        </form>
+      </div>
+      <div class="col-md-4">
+        <div class="p-4 border">
+          <label for="checkin">入住日期</label>
+          <input type="date" name="checkin" id="date1" class="form-control mb-3">
+          <label for="checkout">退房日期</label>
+          <input type="date" name="checkout" id="date2" class="form-control">
         </div>
       </div>
-      <div class="col-4 d-flex align-items-center justify-content-center">
-        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
-          <form>
-            <div class="mb-1 text-center">
-              <label for="checkin">入住日期
-                <input type="date" name="checkin" id="checkin">
-              </label>
-            </div>
-            <hr>
-            <div class="mb-1 text-center">
-              <label for="checkout">退房日期
-                <input type="date" name="checkout" id="checkout">
-              </label>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div class="col-4 d-flex align-items-center justify-content-center">
-        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
-          <div>
-            <h2>信用卡資訊</h2>
-            <label for="card-number" class="form-label">信用卡卡號：</label>
-            <input type="text" class="form-control" id="card-number" placeholder="請輸入信用卡卡號">
-          </div>
+      <div class="col-md-4">
+        <div class="custom-content p-4 border">
+          <h2>信用卡資訊</h2>
+          <label for="card-number" class="form-label">信用卡卡號：</label>
+          <input type="text" class="form-control mb-3" id="creditcard" placeholder="請輸入信用卡卡號">
         </div>
       </div>
     </div>
   </div>
 
-
-  <div class="container text-center custom-section">
+  <div class="container mt-4">
     <div class="row">
-      <div class="col-4 d-flex align-items-stretch">
-        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
+      <div class="col-md-4">
+        <div class="custom-content p-4 border">
+          <h1>總金額</h1>
+          <hr>
+          <h2>${$price}</h2>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="custom-content p-4 border">
+          <h1>會員點數</h1>
+          <div class="memberpoint align-items-center" readonly>${memberpoint}</div>
           <div>
-            <h1>Total Price</h1>
-            <hr>
-            <h2>$20000</h2>
+            <button class="btn btn-secondary mt-3">全部使用</button>
           </div>
         </div>
       </div>
-      <div class="col-4 d-flex align-items-center justify-content-center">
-        <div class="custom-content w-100 d-flex justify-content-center align-items-center">
-          <div>
-            <h1>會員點數</h1>
-            <div class="memberpoint align-items-center" readonly>100</div>
-            <div>
-              <button class="btn align-items-center">全部使用</button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-4 d-flex align-items-center justify-content-center">
-        <div class="w-100 d-flex justify-content-center align-items-center">
-          <div>
-            <button id="checkoutButton" class="custom-button" href="ord">結帳</button>
-          </div>
+      <div class="col-md-4">
+        <div class="p-4 border text-center">
+          <button id="checkoutButton" class="btn btn-primary btn-lg">結帳</button>
         </div>
       </div>
     </div>
