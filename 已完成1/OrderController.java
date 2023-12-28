@@ -44,12 +44,13 @@ public class OrderController extends HttpServlet {
         	LocalDate booking_date = LocalDate.parse(sbooking_date, formatter);
         	LocalDate checkin_date = LocalDate.parse(scheckin_date, formatter);
         	LocalDate checkout_date = LocalDate.parse(scheckout_date, formatter);
+        	String email = jso.getString("email");
             
         	String customer_point_use = jso.getString("customer_point_use");
         	boolean cpu = false;
         	if(customer_point_use.equals("true")) {cpu = true;}
             /** 建立一個新的Room物件 */
-            Order o = new Order(room_id, customer_id, order_number, order_price, number_of_guest, booking_date, checkin_date, checkout_date);
+            Order o = new Order(room_id, customer_id, order_number, order_price, number_of_guest, booking_date, checkin_date, checkout_date,email);
             
             /** 透過RoomHelper物件的create()方法新建一個房型至資料庫 */
             JSONObject data = oh.checkout(o, cpu);
@@ -123,4 +124,3 @@ public class OrderController extends HttpServlet {
         }
 
 }
-
