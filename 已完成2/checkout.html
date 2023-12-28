@@ -302,7 +302,8 @@
 	        
 	    }
 	    
-
+		
+	    var checkdate = -3; //如果沒有選日期回傳-3
 	    function checkAvailabilityForRange(room_id, checkinDate, checkoutDate) {
 	    	var hotel_id = -2;
 	        var url = `api/room.do?hotel_id=${encodeURIComponent(hotel_id)}&room_id=${encodeURIComponent(room_id)}&day1=${encodeURIComponent(checkinDate)}&day2=${encodeURIComponent(checkoutDate)}`;
@@ -323,11 +324,24 @@
 	            console.log('Response from server:', query);
 	            var roomAvailability = query.response.data;
 	            console.log("11",roomAvailability);
-	            console.log("11",roomAvailability.length);
+	            var count = 0;
+	            
+	          	for(var i = 0;i < roomAvailability.length;i++){
+	          		var num = roomAvailability[i].available_quantity;
+	          		if(num > 0){
+	          			count++;
+	          			checkdate = -1;//有空房回傳-1
+	          		}
+	          		else{
+	          			checkdate = -2;//沒有空房回傳-2
+	          		}
+	          	}
+	          	console.log("11",checkdate);
+	          	console.log("count",count);
+	            
 	         // 假設 checkinDate 和 checkoutDate 是兩個日期物件
 	            var day1 = new Date(checkinDate);
 	            var day2 = new Date(checkoutDate);
-
 	            // 計算兩個日期之間的天數
 	            var timeDifference = day2.getTime() - day1.getTime();
 	            var dayDifference = (timeDifference / (1000 * 3600 * 24))+1; // 1天 = 1000毫秒 * 60秒 * 60分 * 24小時
@@ -336,7 +350,7 @@
 
 	            // 假設後端回傳的是一個包含所有日期的資料陣列
 
-	            if (roomAvailability.length == dayDifference) {
+	            if (count == dayDifference) {
 	                alert('選擇的日期範圍內所有日期都有空房');
 	            } else {
 	                alert('選擇的日期範圍內沒有空房');
