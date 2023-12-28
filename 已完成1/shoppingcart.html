@@ -19,6 +19,11 @@
             margin-bottom: 20px;
 
         }
+        
+        a {
+		  color: #364f37; /* 或者你想要的任何顏色 */
+
+		}
     </style>
 </head>
 
@@ -84,7 +89,8 @@
                 
                 function getData(){
                 	var id = user_id;
-                	var url = `api/shoppingcart.do?id=${encodeURIComponent(id)}`;
+                	var room_id = -1;
+                	var url = `api/shoppingcart.do?id=${encodeURIComponent(id)}&room_id=${encodeURIComponent(room_id)}`;
           		  fetch(url, {
           	          method: 'GET',
           	          headers: {
@@ -114,12 +120,14 @@
                             var num = scs[i].order_number;
                             var room_id = scs[i].room_id;
                             var image = scs[i].room_image;
+                            var hotel_id = scs[i].hotel_id
                             console.log("Hotel Name:", hotelName);
                             console.log("room:", room);
                             console.log("num:",num);
                             console.log("price",price);
                             console.log("room_id",room_id);
-                            console.log("image",image)
+                            console.log("image",image);
+                            console.log("hotel",hotel_id);
 
                             // 如果当前行已经有了三个卡片，创建新的行容器
                             if (currentRow.children.length === 3) {
@@ -128,7 +136,7 @@
                             }
 
                             // 创建旅店卡片
-                            const card = createShoppingCart(hotelName, room, price,num,room_id,image);
+                            const card = createShoppingCart(hotelName, room, price,num,room_id,image,hotel_id);
 
                             // 将卡片添加到当前行容器中
                             currentRow.appendChild(card);
@@ -148,7 +156,7 @@
 			    // 修改链接的 href 属性，传递 loginStatus 参数
 			   	logoLink.href = 'index.html?login_status=' + 'true';
 			    
-			   	function createShoppingCart(hotelName, room, price,num,room_id,image){
+			   	function createShoppingCart(hotelName, room, price,num,room_id,image,hotel_id){
 			        const cardElement = document.createElement('div');
 			        var number = "訂房數量:" + num;
 			        var total_price= "總價:" + price*num;
@@ -168,15 +176,17 @@
 			        
 			        cardElement.className = 'col-lg';
 			        cardElement.innerHTML = `
-			            <div class="card shadow-lg" style="height: 100%;" id="roomCard_${room_id}">
-			            <img src="${image}" alt="" class="card-img-top" style="height: 180px; object-fit: cover;">
+			            <div class="card shadow-lg" style="height: 110%;" id="roomCard_${room_id}">
+			            <img src="${image}" alt="" class="card-img-top" style="height: 230px; object-fit: cover;">
 			                <div class="card-body" style="height: 100%;">
 			                    <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
-			                        <h3 class="card-title">${hotelName}</h3>
+				                    <a href="hotel.html?hotel_id=${encodeURIComponent(hotel_id)}">
+				                    <h3 class="card-title">${hotelName}</h3>
+				                  	</a>
 			                        <p class="card-text">${room}</p>
 			                        <p class="card-text">${total_price}</p>
 			                        <p class="card-text">${number}</p>
-			                        <a class="btn btn-primary">結帳</a>
+			                        <a href="checkout.html?room_id=${encodeURIComponent(room_id)}&user_id=${encodeURIComponent(user_id)}" class="btn btn-primary">結帳</a>
 			                        <a class="btn btn-primary deleteBtn" onclick="deleteBtn('${room_id}')">刪除</a>
 			                    </div>
 			                </div>
