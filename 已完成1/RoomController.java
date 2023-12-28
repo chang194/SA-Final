@@ -1,6 +1,9 @@
 package controller;
 
 import java.io.*;
+import java.sql.*;
+import java.text.*;
+import java.time.*;
 
 import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
@@ -72,17 +75,39 @@ public class RoomController extends HttpServlet {
         /** 透過JsonReader類別將Request之JSON格式資料解析並取回 */
         JsonReader jsr = new JsonReader(request);
         /** 若直接透過前端AJAX之data以key=value之字串方式進行傳遞參數，可以直接由此方法取回資料 */
-        int id = Integer.parseInt(jsr.getParameter("id"));
-        
-        ////////////////////////////hotel_id
-        int hotel_id = 2;
+        int room_id = Integer.parseInt(jsr.getParameter("room_id"));
+        int hotel_id = Integer.parseInt(jsr.getParameter("hotel_id"));
+        System.out.println(hotel_id);
         
         /** 新建一個JSONObject用於將回傳之資料進行封裝 */
         JSONObject resp = new JSONObject();
 
         if(hotel_id == -1) {
         	/** 透過RoomHelper物件的getByID()方法自資料庫取回該房型之資料，回傳之資料為JSONObject物件 */
-        	JSONObject query = rh.getByID(id);
+        	String dateString = jsr.getParameter("day");
+        	 java.sql.Date realdate = null;
+
+            // 使用 SimpleDateFormat 解析字串
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date utilDate;
+            try {
+                utilDate = dateFormat.parse(dateString);
+
+                // 將 java.util.Date 轉換為 java.sql.Date
+                java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+             // 將 java.sql.Date 轉換為 java.time.LocalDate
+                LocalDate localDate = sqlDate.toLocalDate();
+
+                // 加一天
+                LocalDate nextDay = localDate.plusDays(1);
+
+                // 將結果轉換回 java.sql.Date
+                realdate = Date.valueOf(nextDay);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        	JSONObject query = rh.getAvailableDate(room_id,realdate);
+        	
             
         	resp.put("status", "200");
         	resp.put("message", "房型資料取得成功");
@@ -90,12 +115,11 @@ public class RoomController extends HttpServlet {
         
         	/** 透過JsonReader物件回傳到前端（以JSONObject方式） */
         	jsr.response(resp, response);
-        }
-        else {
+        }else {
         	JSONObject query = rh.getByHotelID(hotel_id);
-            
+            System.out.println(query);
             resp.put("status", "200");
-            resp.put("message", "房型資料取得成功");
+            resp.put("message", "所有房型資料取得成功");
             resp.put("response", query);
             
             /** 透過JsonReader物件回傳到前端（以JSONObject方式） */
