@@ -15,19 +15,18 @@ public class Order {
 	private LocalDate checkout_date;
 	private String email;
 	//add
-	public Order(int room_id,int customer_id,int order_number,int order_price,int number_of_guest,LocalDate booking_date,LocalDate checkin_date,LocalDate checkout_date,String email) {
+	public Order(int room_id,int customer_id,int order_number,int order_price,int number_of_guest,LocalDate checkin_date,LocalDate checkout_date,String email) {
 		this.room_id = room_id;
 		this.customer_id = customer_id;
 		this.order_number = order_number;
 		this.order_price = order_price;
 		this.number_of_guest = number_of_guest;
-		this.booking_date = booking_date;
 		this.checkin_date = checkin_date;
 		this.checkout_date = checkout_date;
 		this.email = email;
 	}
 	//getData
-	public Order(int order_id,int room_id,int customer_id,int order_number,int order_price,int number_of_guest,LocalDate booking_date,LocalDate checkin_date,LocalDate checkout_date,String email) {
+	public Order(int order_id,int room_id,int customer_id,int order_number,int order_price,int number_of_guest,LocalDate booking_date,LocalDate checkin_date,LocalDate checkout_date) {
 		this.order_id = order_id;
 		this.room_id = room_id;
 		this.customer_id = customer_id;
@@ -37,7 +36,6 @@ public class Order {
 		this.booking_date = booking_date;
 		this.checkin_date = checkin_date;
 		this.checkout_date = checkout_date;
-		this.email = email;
 	}
 	public int getOrder_id() {
 		return order_id;
