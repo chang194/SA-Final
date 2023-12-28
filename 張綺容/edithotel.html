@@ -1,1 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <title>Modify Room Information</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="static/css/button.css">
+    <script src="static/js/login.js"></script>
+    <style>
+        .row-gap {
+            margin-bottom: 20px;
+        }
+
+        .custom-section {
+            margin-top: 120px;
+            margin-bottom: 120px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar bg-white navbar-white p-3 navbar-expand-lg">
+        <div class="container-fluid">
+            <a href="hotelowner.html" class="navbar-brand">
+                <img src="static/img/LOGO.png" alt="logo" id="logoLink">
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="edithotel.html" class="nav-link">修改旅店資料</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown"
+                    data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="static/img/會員.png" alt="會員圖標">
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="memberDropdown">
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    
+    <div class="container mt-5">
+        <h2>旅店資訊</h2>
+        <form action="/create_hotel" method="post" enctype="multipart/form-data" id="hotelForm">
+            <div class="mb-3">
+                <label for="hotelname" class="form-label">旅店名稱</label>
+                <input type="text" class="form-control" id="hotelname" name="hotelname" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="location" class="form-label">旅店地址</label>
+                <input type="text" class="form-control" id="location" name="location" disabled>
+            </div>
+            <div class="mb-3">
+                <label for="facilities" class="form-label">旅店設施</label>
+                <textarea class="form-control" id="facilities" name="facilities" rows="3" disabled></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="intro" class="form-label">旅店簡介</label>
+                <textarea class="form-control" id="intro" name="intro" rows="5" disabled></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="hotel_image" class="form-label">上傳旅店照片</label>
+                <input type="file" class="form-control" id="hotel_image" name="hotel_image" accept="image/*">
+            </div>
+            <div class="d-grid gap-2 col-3 mx-auto">
+                <button type="button" class="btn btn-primary mb-3" id="editButton"
+                    onclick="enableEditMode()">編輯</button>
+                <button type="button" class="btn btn-primary mb-3" id="saveButton"
+                    onclick="saveChanges()">確認編輯</button>
+                <button type="button" class="btn btn-secondary mb-3" onclick="cancelChanges()">返回</button>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">修改成功</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    旅店資訊修改成功！
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確認</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/login.js"></script>
+    <script>
+		/////定義全域變數
+		var username;
+		var password;
+
+		//獲取 URL 中的查詢參數
+    	const urlParams = new URLSearchParams(window.location.search);
+    	// 使用 get 方法根據參數名獲取值
+  		var user_id = localStorage.getItem('user_id');
+    	var user_type = localStorage.getItem('user_type');
+    	var hotel_id = localStorage.getItem('hotel_id');
+    	console.log('user_id:', user_id);
+    	console.log('hotel_id:', hotel_id);
+    	
+    	var user_id = localStorage.getItem('user_id');
+    	var hotel_id = localStorage.getItem('hotel_id');
+
+    	//全域變數
+    	var hotelname;
+        var location;
+        var facilities;
+        var intro;
+        var hotel_image;
+
+        let editMode = false;
+        const editBtn = document.getElementById("editButton");
+        const saveBtn = document.getElementById("saveButton");
+        
+        function enableEditMode() {
+            editMode = true;
+
+            document.getElementById("hotelname").disabled = false;
+            document.getElementById("location").disabled = false;
+            document.getElementById("facilities").disabled = false;
+            document.getElementById("intro").disabled = false;
+            document.getElementById("hotel_image").disabled = false;
+
+            const button = document.querySelector('button.btn-primary');
+            button.textContent = '確認編輯';
+            button.addEventListener('click', saveChanges);
+            const button1 = document.querySelector('button.btn-secondary');
+            button1.textContent = '取消';
+
+            editBtn.style.display = "none";
+            saveBtn.style.display = "block";
+
+            const cancelButton = document.querySelector('.btn-secondary');
+            cancelButton.style.display = 'block';
+            cancelButton.style.visibility = 'visible';
+        }
+
+        function saveChanges() {
+            var nhotelname = document.getElementById('hotelname').value;
+            var nlocation = document.getElementById('location').value;
+            var nfacilities = document.getElementById('facilities').value;
+            var nintro = document.getElementById('intro').value;
+            var nhotel_image = document.getElementById('hotel_image').value;
+
+            if (nhotelname) {hotelname = nhotelname;}
+            if (nlocation) {location = nlocation;}
+            if (nfacilities) {facilities = nfacilities;}
+            if (nintro) {intro = nintro;}
+            if (nhotel_image) {hotel_image = nhotel_image;}
+
+            var hotelData = {
+            	hotel_id: hotel_id,
+            	hotelname: hotelname,
+            	location: location,
+            	facilities: facilities,
+            	intro: intro,
+            	image: hotel_image
+            };
+            
+            fetch('api/hotel.do', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(HotelData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Updated data:', data);
+                    displayNotification('更新成功！');
+                    editBtn.style.display = "block";
+                    saveBtn.style.display = "none";
+                    const cancelButton = document.querySelector('.btn-secondary');
+                    cancelButton.style.display = 'none';
+                    cancelChanges();
+                })
+                .catch(error => {
+                	
+                    displayNotification('更新失敗！');
+                    editBtn.style.display = "block";
+                    saveBtn.style.display = "none";
+                    const cancelButton = document.querySelector('.btn-secondary');
+                    cancelButton.style.display = 'none';
+                    cancelChanges();
+                });
+
+            editMode = false;
+            
+            //saveBtn.style.display = "none";
+            editBtn.style.display = "block";
+        }
+
+        function displayNotification(message) {
+            alert(message);
+        }
+
+        function cancelChanges() {
+        	if(editMode == false){
+        		var Url = 'hotelowner.html?login_status=' + 'true';
+        	    window.location.href = Url;
+        	}
+        	else{
+            editMode = false;
+
+            document.getElementById('hotelname').disabled = true;
+            document.getElementById('location').disabled = true;
+            document.getElementById('facilities').disabled = true;
+            document.getElementById('intro').disabled = true;
+            document.getElementById('hotel_image').disabled = true;
+            
+            const button = document.querySelector('button.btn-primary');
+            button.textContent = '編輯';
+            button.setAttribute('onclick', 'enableEditMode()');
+            editBtn.style.display = "block";
+            saveBtn.style.display = "none";
+
+            const cancelButton = document.querySelector('.btn-secondary');
+            cancelButton.textContent = '返回';
+        	}
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            getData();
+        });
+        
+        function getData(){
+        	var url;
+            url = 'api/hotel.do?hotel_id=';
+         	
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(query => {
+                    console.log('Response from server:', query);
+
+                 // 從 response 中取得 data 陣列
+                 	var dataArray = query.response.data;a
+
+                 // 檢查 data 是否為陣列且有資料
+                 	if (Array.isArray(dataArray) && dataArray.length > 0) {
+
+                
+                   // 從第一筆資料中取得 email
+                  	firstData = dataArray[0];
+                  	hotelname = firstData.hotelname;
+                  	location = firstData.location;
+                    facilities = firstData.facilities;
+                    intro = firstData.intro;
+                    hotel_image = firstData.image;
+
+                   // 將 email 資料設定到你的 HTML 元素
+                   document.getElementById('hotelname').setAttribute('placeholder', hotelname);
+                   document.getElementById('location').setAttribute('placeholder', location);
+                   document.getElementById('facilities').setAttribute('placeholder', facilities);
+                   document.getElementById('intro').setAttribute('placeholder', intro);
+                   document.getElementById('hotel_image').setAttribute('placeholder', hotel_image);
+ 
+                   
+                 } else {
+                   // 若沒有資料，印出錯誤訊息
+                   console.error('No data found.');
+                 }
+                  
+                })
+                .catch(error => {
+                    displayNotification('資料取得失敗！');
+                    
+                    document.getElementById('hotelname').setAttribute('placeholder', 'hotelname');
+                    document.getElementById('location').setAttribute('placeholder', 'location');
+                    document.getElementById('facilities').setAttribute('placeholder', 'facilities');
+                    document.getElementById('intro').setAttribute('placeholder', 'intro');
+                    document.getElementById('hotel_image').setAttribute('placeholder', 'hotel_image');
+                });
+
+            editMode = false;
+
+            saveBtn.style.display = "none";
+            editBtn.style.display = "block";
+			
+        }
+        
+        
+		///////////////將logo的連結加上變數傳送
+    	var logoLink = document.getElementById('logoLink');
+     	// 修改链接的 href 属性，传递 loginStatus 参数
+     	logoLink.href = 'hotelowner.html?login_status=' + 'true';
+        
+    </script>
