@@ -43,12 +43,14 @@ public class OrderHelper {
         int row = 0;
         /** 儲存JDBC檢索資料庫後回傳之結果，以 pointer 方式移動到下一筆資料 */
         ResultSet rs = null;
+        ResultSet rs_room = null;
+        ResultSet rs_hotel = null;
         
         try {
             /** 取得資料庫之連線 */
             conn = DBMgr.getConnection();
             /** SQL指令 */
-            String sql = "SELECT * FROM `mydb`.`tbl_Order` WHERE `order_id` = ? LIMIT 1";
+            String sql = "SELECT * FROM `mydb`.`tbl_Order` WHERE `order_id` = ?";
             
             /** 將參數回填至SQL指令當中，若無則不用只需要執行 prepareStatement */
             pres = conn.prepareStatement(sql);
@@ -60,24 +62,67 @@ public class OrderHelper {
             exexcute_sql = pres.toString();
             System.out.println(exexcute_sql);
             
+            JSONObject dateInfo = new JSONObject();
+            
             /** 透過 while 迴圈移動pointer，取得每一筆回傳資料 */
             while(rs.next()) {
                 /** 將 ResultSet 之資料取出 */
 	            int room_id = rs.getInt("room_id");
+	            
+	            String sql_room = "SELECT * FROM `mydb`.`tbl_Room` WHERE `room_id` = ?";
+	            /** 將參數回填至SQL指令當中，若無則不用只需要執行 prepareStatement */
+	            pres = conn.prepareStatement(sql_room);
+	            pres.setInt(1, room_id);
+	            /** 執行查詢之SQL指令並記錄其回傳之資料 */
+	            rs_room = pres.executeQuery();
+
+	            /** 紀錄真實執行的SQL指令，並印出 **/
+	            exexcute_sql = pres.toString();
+	            while(rs_room.next()) {
+	            	int hotel_id = rs_room.getInt("hotel_id");
+		            dateInfo.put("hotel_id",hotel_id);
+	            	String room_type = rs_room.getString("room_type");
+	            	String room_image =rs_room.getString("room_image");
+	            	
+	            	String sql_hotel = "SELECT * FROM `mydb`.`tbl_Hotel` WHERE `hotel_id` = ?";
+	            	/** 將參數回填至SQL指令當中，若無則不用只需要執行 prepareStatement */
+	                pres = conn.prepareStatement(sql_hotel);
+	                pres.setInt(1, hotel_id);
+	                /** 執行查詢之SQL指令並記錄其回傳之資料 */
+	                rs_hotel = pres.executeQuery();
+
+	                /** 紀錄真實執行的SQL指令，並印出 **/
+	                exexcute_sql = pres.toString();
+	                while(rs_hotel.next()) {
+	                	String hotelname = rs_hotel.getString("hotel_name");
+	                	dateInfo.put("hotelname",hotelname);
+	                	dateInfo.put("room_type",room_type);
+	                	dateInfo.put("room_image",room_image);
+	                	
+	                }
+	            }
+	            
+	            
 	            int customer_id = rs.getInt("customer_id");
+	            dateInfo.put("customer_id",customer_id);
 	            int order_number = rs.getInt("order_number");
+	            dateInfo.put("order_number",order_number);
 	            int order_price = rs.getInt("order_price");
+	            dateInfo.put("order_price",order_price);
 	            int guest_number = rs.getInt("guest_number");
+	            dateInfo.put("guest_number",guest_number);
                 java.sql.Date sqlDate = rs.getDate("booking_date");
                 LocalDate booking_date = sqlDate.toLocalDate();
+                dateInfo.put("booking_date",booking_date);
                 sqlDate = rs.getDate("checkin_date");
                 LocalDate checkin_date = sqlDate.toLocalDate();
+                dateInfo.put("checkin_date",checkin_date);
                 sqlDate = rs.getDate("checkout_date");
 	            LocalDate checkout_date = sqlDate.toLocalDate();
+	            dateInfo.put("checkout_date",checkout_date);
+
+                jsa.put(dateInfo);
                 
-                /** 將旅店資料產生一個新Order物件 */
-                o = new Order(id, room_id, customer_id, order_number, order_price, guest_number, booking_date, checkin_date, checkout_date);
-                jsa.put(o.getData());
             }
 
         } catch (SQLException e) {
@@ -161,7 +206,7 @@ public class OrderHelper {
                     orderdetail.put("booking_date", booking_date);
                     orderdetail.put("checkin_date", checkin_date);
     
-                    String customerSql = "SELECT * FROM `mydb`.`tbl_customer` WHERE `customer_id` = ?";
+                    String customerSql = "SELECT * FROM `mydb`.`tbl_Customer` WHERE `customer_id` = ?";
                     pres = conn.prepareStatement(customerSql);
                     pres.setInt(1, customer_id);
                     rsCustomer = pres.executeQuery();
@@ -284,8 +329,8 @@ public class OrderHelper {
             /** 取得資料庫之連線 */
             conn = DBMgr.getConnection();
             /** SQL指令 */
-            String sql = "INSERT INTO `mydb`.`tbl_Order`(`room_id`, `customer_id`, `order_number`, `order_price`, `guest_number`, `booking_date`, checkin_date, checkout_date)"
-                    + " VALUES(?, ?, ?, ?, ?, ?)";
+            String sql = "INSERT INTO `mydb`.`tbl_Order`(`room_id`, `customer_id`, `order_number`, `order_price`, `guest_number`, `booking_date`, `checkin_date`, `checkout_date`, `email`)"
+                    + " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
             /** 取得所需之參數 */
             int room_id = o.getRoom_id();
@@ -293,9 +338,9 @@ public class OrderHelper {
 	        int order_number = o.getOrder_number(); 
 	        int order_price = o.getOrder_price();
 	        int number_of_guest = o.getNumber_of_guest();
-            LocalDate booking_date = LocalDate.now();
 	        LocalDate checkin_date = o.getCheckin_date();
 	        LocalDate checkout_date = o.getCheckout_date();
+	        String email = o.getEmail();
             
             /** 將參數回填至SQL指令當中 */
             pres = conn.prepareStatement(sql);
@@ -304,9 +349,10 @@ public class OrderHelper {
             pres.setInt(3, order_number);
             pres.setInt(4, order_price);
             pres.setInt(5, number_of_guest);
-            pres.setDate(6, java.sql.Date.valueOf(booking_date));
+            pres.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
             pres.setDate(7, java.sql.Date.valueOf(checkin_date));
             pres.setDate(8, java.sql.Date.valueOf(checkout_date));
+            pres.setString(9, email);
             
             /** 執行新增之SQL指令並記錄影響之行數 */
             row = pres.executeUpdate();
@@ -373,7 +419,7 @@ public class OrderHelper {
             /** 取得資料庫之連線 */
             conn = DBMgr.getConnection();
             /** SQL指令 */
-            String sql = "SELECT count(*) FROM `mydb`.`tbl_Creditcard` WHERE `card_num` = ?";
+            String sql = "SELECT count(*) FROM `mydb`.`tbl_creditcard` WHERE `card_num` = ?";
             
             /** 將參數回填至SQL指令當中 */
             pres = conn.prepareStatement(sql);
@@ -405,12 +451,13 @@ public class OrderHelper {
     }
 
     /**
-     * 刪除一個訂單
+     * 從購物車刪除已下定的東西
      *
-     * @param id 訂單id
+     * @param customer_id 顧客編號
+     * @param room_id 房間編號
      * @return the JSONObject 回傳SQL指令執行結果與執行之資料
      */
-    public JSONObject deleteByID(int id){
+    public JSONObject deleteByID(int customer_id,int room_id){
         /** 記錄實際執行之SQL指令 */
         String exexcute_sql = "";
         /** 紀錄程式開始執行時間 */
@@ -418,26 +465,16 @@ public class OrderHelper {
         /** 紀錄SQL總行數 */
         int row = 0;
 
-        //先取得訂單資料
-        JSONObject order_detail = getByOrderID(id);
-        JSONArray jsa = order_detail.getJSONArray("data");
-        JSONObject orderData = jsa.getJSONObject(0);
-        int room_id = orderData.getInt("room_id");
-        int order_number = orderData.getInt("order_number");
-        String dateString = orderData.getString("checkin_date");
-        LocalDate checkin_date = LocalDate.parse(dateString);
-        dateString = orderData.getString("checkout_date");
-        LocalDate checkout_date = LocalDate.parse(dateString);
-        
         try {
             /** 取得資料庫之連線 */
             conn = DBMgr.getConnection();
             /** SQL指令 */
-            String sql = "DELETE FROM `mydb`.`tbl_Order` WHERE `order_id` = ?";
+            String sql = "DELETE FROM `mydb`.`tbl_shoppingcart` WHERE `customer_id` = ? AND `room_id` = ? LIMIT 1";
 
             /** 將參數回填至SQL指令當中 */
             pres = conn.prepareStatement(sql);
-            pres.setInt(1, id);
+            pres.setInt(1, customer_id);
+            pres.setInt(2, room_id);
             
             /** 執行新增之SQL指令並記錄影響之行數 */
             row = pres.executeUpdate();
@@ -445,17 +482,6 @@ public class OrderHelper {
             /** 紀錄真實執行的SQL指令，並印出 **/
             exexcute_sql = pres.toString();
             System.out.println(exexcute_sql);
-
-            ////新增空房紀錄
-            sql = "UPDATE `mydb`.`tbl_room_availability` " +
-            "SET `available_quantity` = `available_quantity` + ? " +
-            "WHERE `room_id` = ? AND `date` >= ? AND `date` < ?";
-
-            PreparedStatement pres = conn.prepareStatement(sql);
-            pres.setInt(1, order_number);
-            pres.setInt(2, room_id);
-            pres.setDate(3, java.sql.Date.valueOf(checkin_date));
-            pres.setDate(4, java.sql.Date.valueOf(checkout_date));
 
             pres.executeUpdate();
 
