@@ -13,8 +13,9 @@ public class Order {
 	private LocalDate booking_date;
 	private LocalDate checkin_date;
 	private LocalDate checkout_date;
+	private String email;
 	//add
-	public Order(int room_id,int customer_id,int order_number,int order_price,int number_of_guest,LocalDate booking_date,LocalDate checkin_date,LocalDate checkout_date) {
+	public Order(int room_id,int customer_id,int order_number,int order_price,int number_of_guest,LocalDate booking_date,LocalDate checkin_date,LocalDate checkout_date,String email) {
 		this.room_id = room_id;
 		this.customer_id = customer_id;
 		this.order_number = order_number;
@@ -23,9 +24,10 @@ public class Order {
 		this.booking_date = booking_date;
 		this.checkin_date = checkin_date;
 		this.checkout_date = checkout_date;
+		this.email = email;
 	}
 	//getData
-	public Order(int order_id,int room_id,int customer_id,int order_number,int order_price,int number_of_guest,LocalDate booking_date,LocalDate checkin_date,LocalDate checkout_date) {
+	public Order(int order_id,int room_id,int customer_id,int order_number,int order_price,int number_of_guest,LocalDate booking_date,LocalDate checkin_date,LocalDate checkout_date,String email) {
 		this.order_id = order_id;
 		this.room_id = room_id;
 		this.customer_id = customer_id;
@@ -35,6 +37,7 @@ public class Order {
 		this.booking_date = booking_date;
 		this.checkin_date = checkin_date;
 		this.checkout_date = checkout_date;
+		this.email = email;
 	}
 	public int getOrder_id() {
 		return order_id;
@@ -63,6 +66,9 @@ public class Order {
 	public LocalDate getCheckout_date() {
 		return checkout_date;
 	}
+	public String getEmail() {
+		return email;
+	}
 	
 	public JSONObject getData() {
 		JSONObject jso = new JSONObject();
@@ -74,6 +80,7 @@ public class Order {
 		jso.put("booking_date", getBooking_date());
 		jso.put("checkin_date", getCheckin_date());
 		jso.put("checkout_date", getCheckout_date());
+		jso.put("email", getEmail());
 		return jso;
 	}
 }
