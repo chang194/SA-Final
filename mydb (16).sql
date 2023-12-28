@@ -85,7 +85,7 @@ CREATE TABLE `tbl_hotel` (
   `hotel_image` varchar(250) DEFAULT NULL,
   `hotel_facilities` text DEFAULT NULL,
   `hotel_intro` text DEFAULT NULL,
-  `phone` text NOT NULL
+  `hotel_phone` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
