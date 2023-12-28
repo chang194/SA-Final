@@ -345,7 +345,7 @@ CREATE TABLE `tbl_order` (
   `customer_id` int(11) NOT NULL,
   `order_number` int(11) NOT NULL,
   `order_price` int(11) NOT NULL,
-  `guest_number` int(11) NOT NULL,
+  `phone` text NOT NULL,
   `booking_date` date NOT NULL,
   `checkin_date` date NOT NULL,
   `checkout_date` date NOT NULL
