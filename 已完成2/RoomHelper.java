@@ -536,5 +536,67 @@ public class RoomHelper {
 
         return response;
     }
+    
+    /**
+     * 取得空房數量
+     *
+     * @param id 房型id
+     * @param checkin_date 入住日期
+     * @param checkout_date 退房日期
+     * @return the JSONObject 回傳SQL指令執行結果與執行之資料
+     */
+    public JSONObject getAvailableRange(int id, LocalDate checkin_date, LocalDate checkout_date) {
+        JSONArray jsa = new JSONArray();
+        String execute_sql = "";
+        long start_time = System.nanoTime();
+        int row = 0;
+        ResultSet rs = null;
+
+        try {
+            conn = DBMgr.getConnection();
+
+            String sql = "SELECT date, available_quantity " +
+                         "FROM `mydb`.`tbl_roomavailability` " +
+                         "WHERE room_id = ? AND date BETWEEN ? AND ?";
+
+            pres = conn.prepareStatement(sql);
+            pres.setInt(1, id);
+            pres.setDate(2, Date.valueOf(checkin_date));
+            pres.setDate(3, Date.valueOf(checkout_date));
+
+            rs = pres.executeQuery();
+
+            while (rs.next()) {
+                JSONObject dateInfo = new JSONObject();
+                java.sql.Date sqlDate = rs.getDate("date");
+                LocalDate date = sqlDate.toLocalDate();
+                dateInfo.put("date", date);
+                dateInfo.put("available_quantity", rs.getInt("available_quantity"));
+                jsa.put(dateInfo);
+            }
+
+            execute_sql = pres.toString();
+            System.out.println(execute_sql);
+
+        } catch (SQLException e) {
+            System.err.format("SQL State: %s\n%s\n%s", e.getErrorCode(), e.getSQLState(), e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBMgr.close(pres, conn);
+        }
+
+        long end_time = System.nanoTime();
+        long duration = (end_time - start_time);
+
+        JSONObject response = new JSONObject();
+        response.put("sql", execute_sql);
+        response.put("row", row);
+        response.put("time", duration);
+        response.put("data", jsa);
+
+        return response;
+    }
+
 
 }
