@@ -110,7 +110,10 @@
           <h2 class="roomtype" id="room_type">${room_type}</h2>
           <hr>
           <label for="number">請選擇房間數量：</label>
-          <input type="number" name="room_num" id="order_number" min="1" max="roomavaliable" class="form-control" value=order_number>
+          <input type="number" name="room_num" id="order_number" min="1" max="roomavaliable" class="form-control">
+          <hr>
+          <label for="number">請選擇預住人數：</label>
+          <input type="number" name="guest" id="guest_number" min="1" max="roomavaliable" class="form-control">
         </div>
       </div>
     </div>
@@ -121,7 +124,7 @@
       <div class="col-md-4">
         <form class="p-4 border">
           <label for="username" class="form-label">訂房者</label>
-          <input type="text" class="form-control mb-3" id="ooker" placeholder="輸入訂房者名稱">
+          <input type="text" class="form-control mb-3" id="booker" placeholder="輸入訂房者名稱">
           <label for="email" class="form-label">電子郵件</label>
           <input type="email" class="form-control" id="email" placeholder="請輸入電子郵件">
         </form>
@@ -154,7 +157,7 @@
           <h2 id="total_price">${total_price}</h2>
           <h1>折扣後金額</h1>
           <hr>
-          <h2 id="total_price">${total_price}</h2>
+          <h2 id="price">${price}</h2>
         </div>
       </div>
       <div class="col-md-4">
@@ -168,28 +171,12 @@
       </div>
       <div class="col-md-4">
         <div class="p-4 border text-center">
-          <button id="checkoutButton" class="btn btn-primary btn-lg" onclick="checkout()">結帳</button>
+          <button id="checkoutButton" class="btn btn-primary btn-lg">結帳</button>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="successModalLabel">下訂單成功</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          訂單已完成！
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">確認</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -206,21 +193,6 @@
 	 	console.log('user_id:', user_id);
 	 	console.log('room:', room_id);
 	  
-	    function displayModal(title, message, redirectTo) {
-	      const modalTitle = document.getElementById('commonModalLabel');
-	      const modalBody = document.getElementById('commonModalBody');
-	
-	      modalTitle.innerText = title;
-	      modalBody.innerText = message;
-	
-	      const commonModal = new bootstrap.Modal(document.getElementById('commonModal'));
-	      commonModal.show();
-	
-	      // Redirect after a delay (2 seconds in this case)
-	      setTimeout(function () {
-	        redirectToOrderDetail(directTo);
-	      }, 2000);
-	    }
 	    
 	    function displayNotification(message) {
             alert(message);
@@ -229,6 +201,8 @@
 	    document.addEventListener('DOMContentLoaded', function() {
 		      getData();
 		  });
+	    
+	    var price;
 	    
 	    function getData(){
         	var id = user_id;
@@ -267,11 +241,12 @@
 
                    document.getElementById('hotelname').innerText = hotelname;
                    document.getElementById('location').innerText = location;
-                   document.getElementById('order_number').setAttribute('placeholder', order_number);
+                   //document.getElementById('order_number').setAttribute('placeholder', order_number);
                    document.getElementById('total_price').innerText = total_price;
                    document.getElementById('room_type').innerText = room_type;
                    document.getElementById('point').innerText = point;
                    
+                   price = firstData.room_price * firstData.order_number;
              	}
   	          })
   	          .catch(error => {
@@ -302,7 +277,7 @@
 	        
 	    }
 	    
-		
+		var min = -1; //最小的房間數
 	    var checkdate = -3; //如果沒有選日期回傳-3
 	    function checkAvailabilityForRange(room_id, checkinDate, checkoutDate) {
 	    	var hotel_id = -2;
@@ -328,7 +303,13 @@
 	            
 	          	for(var i = 0;i < roomAvailability.length;i++){
 	          		var num = roomAvailability[i].available_quantity;
+	          		min = roomAvailability[0].available_quantity;
+	          		if(num < min){
+	          			min = num; //抓最小的房間數
+	          		}
+	          		
 	          		if(num > 0){
+	          			
 	          			count++;
 	          			checkdate = -1;//有空房回傳-1
 	          		}
@@ -351,7 +332,7 @@
 	            // 假設後端回傳的是一個包含所有日期的資料陣列
 
 	            if (count == dayDifference) {
-	                alert('選擇的日期範圍內所有日期都有空房');
+	                alert('確認有空房');
 	            } else {
 	                alert('選擇的日期範圍內沒有空房');
 	            }
@@ -361,55 +342,98 @@
 	        });
 	    }
 	    
-	    function checkout(){
+	    document.addEventListener('DOMContentLoaded', function () {
+        	var checkoutButton = document.getElementById('checkoutButton');
+        	checkoutButton.addEventListener('click', function (event) {
+            	event.preventDefault();
+            
 	    	var order_number = document.getElementById('order_number').value;
             var booker = document.getElementById('booker').value;
             var email = document.getElementById('email').value;
             var creditcard = document.getElementById('creditcard').value;
             var checkindate = document.getElementById('checkin').value;
             var checkoutdate = document.getElementById('checkout').value;
-            var price = document.getElementById('totalprice').value; //這裡要改
+            var guest_number = document.getElementById('guest_number').value;
+            var order_price = price; //這裡要改
             
             if (!validateEmail(email)) {
                 alert('請輸入有效的電子郵件！');
                 return false;
             }
             if (!booker) {
-                alert('請填寫使用者名稱！');
+                alert('請填寫訂房者名稱！');
                 return false;
             }
 
-            if (validateCard(creditcard)) {
-                alert('請輸入正確的信用卡格式');
+            if (!/^\d{9}$/.test(creditcard)) {
+                alert("請輸入正確信用卡格式");
                 return false;
             }
+            if (checkdate != -1) {
+				alert("請確認日期");
+				return false;
+            }
+            if(min - order_number < 0){
+            	alert("所選日期範圍內的房間數不足以供應");
+            	return false;
+            }
+            if(!guest_number){
+            	alert("請選擇預住人數");
+            	return false;
+            }
+            var apiUrl;
+            apiUrl = 'api/order.do';
 
-            if (!confirmPassword) {
-                alert('請確認密碼！');
-                return false;
-            }
+            // Data to be sent to the backend
+            var checkoutData = {
+            	order_number: order_number,
+                email: email,
+                creditcard: creditcard,
+                checkin_date: checkindate,
+                checkout_date: checkoutdate,
+                number_of_guest: guest_number,
+                order_price: order_price,
+                customer_id: user_id,
+                room_id: room_id
+            };
 
-            if (password !== confirmPassword) {
-                alert('密碼與確認密碼不相符');
-                return false;
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(checkoutData),
+            })
+                .then(response => {
+                	if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                	console.log('Response from server:', data);
+                	
+                	if (data.status === '200'){
+                		alert("結帳成功");
+                		window.location.href = 'index.html?login_status=' + 'true';
+                	}
+                	else{
+                		alert(data.message);
+                	}
+                })
+                .catch(error => {
+                    console.error('錯誤！', error);
+                });
+        	
+            function validateEmail(email) {
+                var re = /\S+@\S+\.\S+/;
+                return re.test(email);
             }
-
-            if (!bth) {
-                alert('請點選生日！');
-                return false;
-            }
-            
-	    }
 	    
-	    function validateEmail(email) {
-            var re = /\S+@\S+\.\S+/;
-            return re.test(email);
-        }
+	   	});
+	  });
 	    
-	    function validateCard(creditcard){
-	    	
-	    }
-	    
+
 	    var logoLink = document.getElementById('logoLink');
 		    // 修改链接的 href 属性，传递 loginStatus 参数
 		   	logoLink.href = 'index.html?login_status=' + 'true';
