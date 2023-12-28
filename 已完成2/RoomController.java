@@ -93,9 +93,7 @@ public class RoomController extends HttpServlet {
             try {
                 utilDate = dateFormat.parse(dateString);
 
-                // 將 java.util.Date 轉換為 java.sql.Date
                 java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-             // 將 java.sql.Date 轉換為 java.time.LocalDate
                 LocalDate localDate = sqlDate.toLocalDate();
 
                 // 加一天
@@ -115,7 +113,43 @@ public class RoomController extends HttpServlet {
         
         	/** 透過JsonReader物件回傳到前端（以JSONObject方式） */
         	jsr.response(resp, response);
-        }else {
+        }
+        else if(hotel_id == -2) {
+        	String day1 = jsr.getParameter("day1");
+        	String day2 = jsr.getParameter("day2");
+        	LocalDate nextday1 = null;
+        	LocalDate nextday2 = null;
+
+            // 使用 SimpleDateFormat 解析字串
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date utilDate1;
+            java.util.Date utilDate2;
+            try {
+                utilDate1 = dateFormat.parse(day1);
+                utilDate2 = dateFormat.parse(day2);
+
+                java.sql.Date sqlDate1 = new java.sql.Date(utilDate1.getTime());
+                java.sql.Date sqlDate2 = new java.sql.Date(utilDate2.getTime());
+                LocalDate localDate1 = sqlDate1.toLocalDate();
+                LocalDate localDate2 = sqlDate2.toLocalDate();
+                // 加一天
+                nextday1 = localDate1.plusDays(1);
+                nextday2 = localDate2.plusDays(1);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            JSONObject query = rh.getAvailableRange(room_id,nextday1,nextday2);
+        	
+            
+        	resp.put("status", "200");
+        	resp.put("message", "房型資料取得成功");
+        	resp.put("response", query);
+        
+        	/** 透過JsonReader物件回傳到前端（以JSONObject方式） */
+        	jsr.response(resp, response);
+        	
+        }
+        else {
         	JSONObject query = rh.getByHotelID(hotel_id);
             System.out.println(query);
             resp.put("status", "200");
