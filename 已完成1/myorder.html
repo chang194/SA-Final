@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>myorder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/css/navbar.css">
+    <link rel="stylesheet" type="text/css" href="static/css/button.css">
+    <script src="static/js/login.js"></script>
+    <style>
+        .custom-section {
+            margin-top: 150px;
+            margin-bottom: 150px;
+        }
+
+        .row-gap {
+            margin-bottom: 20px;
+
+        }
+
+        a {
+            color: #364f37;
+            /* 或者你想要的任何顏色 */
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar bg-white navbar-white p-1 navbar-expand-lg">
+        <div class="container-fluid">
+            <a href="index.html" class="navbar-brand" id="logoLink">
+                <img src="static/img/LOGO.png" alt="logo">
+            </a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a href="" class="nav-link">旅遊社群</a>
+                    </li>
+                    <li class="nav-item" id="myOrdersNavItem" style="display: none;">
+                        <a href="myorder.html" class="nav-link">我的訂單</a>
+                    </li>
+                    <li class="nav-item" id="shoppingCartNavItem" style="display: none;">
+                        <a href="shoppingcart.html" class="nav-link">購物車</a>
+                </ul>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="memberDropdown"
+                        data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="static/img/會員.png" alt="會員圖標">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="memberDropdown">
+                        ${isLoggedIn ?
+                        `<li><a class="dropdown-item" href="member.html">會員資料</a></li>
+                        <li><button class="dropdown-item" onclick="logout()">登出</button></li>` :
+                        `<li><a class="dropdown-item" href="login.html">登入</a></li>`}
+                    </ul>
+                </div>
+                </ul>
+            </div>
+    </nav>
+
+    <div class="p-5">
+        <div class="container">
+            <h1 class="row-gap">我的訂單</h1>
+            <div class="row g-4 row-gap" id=cardContainer>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="static/js/login.js"></script>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        var user_id = localStorage.getItem('user_id');
+        console.log('user_id:', user_id);
+
+        document.addEventListener('DOMContentLoaded', function () {
+            getData();
+        });
+
+        const cardContainer = document.getElementById('cardContainer');
+
+        function displayNotification(message) {
+            alert(message);
+        }
+        
+        function getData() {
+        	
+            var id = user_id;
+            var url = `api/order.do?user_id=${encodeURIComponent(id)}`;
+
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok.');
+                    }
+                    return response.json();
+                })
+                .then(query => {
+                    console.log('Response from server:', query);
+
+                    // 'data' 是包含所有旅店資料的 JSON 數組
+                    console.log('Data:', query.response.data);
+                    var scs = query.response.data;
+
+                    let currentRow = createRow();
+
+                    for (var i = 0; i < scs.length; i++) {
+                        var order_id = scs[i].order_id;//可以當訂單編號
+                        var ordernumber = scs[i].order＿number;//訂房數量
+                        var hotel_id = scs[i].hotel_id;//
+                        var hotelname = scs[i].hotelname;
+                        var room_id = scs[i].room_id;//
+                        var room = scs[i].room_type;
+                        var customer_id = scs[i].customer_id;//
+                        //var booker = scs[i].booker;//訂房者姓名
+                        var guest_number = scs[i].guest_number;
+                        //var booking = scs[i].booking_date;
+                        var date1 = scs[i].checkin_date;
+                        var date2 = scs[i].checkout_date;
+                        var price = scs[i].order_price;
+                        var image = scs[i].hotel_image;
+
+                        console.log("order_id", order_id);
+                        console.log("ordernumber", ordernumber);
+                        console.log("hotel", hotel_id);
+                        console.log("Hotel Name:", hotelname);
+                        console.log("room_id", room_id);
+                        console.log("room:", room);
+                        console.log("customer_id", customer_id);
+                        //console.log("booker", booker);
+                        console.log("guest_number", guest_number);
+                        //consple.log("booking", booking_date);
+                        console.log("date1", date1);
+                        console.log("date2", date2);
+                        console.log("price", price);
+                        console.log("image", image);
+
+
+                        if (currentRow.children.length === 3) {
+                            cardContainer.appendChild(currentRow);
+                            currentRow = createRow();
+                        }
+
+                        const card = createMyOrder(order_id, ordernumber, hotel_id, hotelname, room_id, room, customer_id, guest_number, date1, date2, price, image);
+
+                        currentRow.appendChild(card);
+                    }
+
+                    cardContainer.appendChild(currentRow);
+
+                })
+                .catch(error => {
+                    displayNotification('資料取得失敗！');
+                });
+        }
+
+        var logoLink = document.getElementById('logoLink');
+        logoLink.href = 'index.html?login_status=' + 'true';
+
+        function MyOrder(order_id, ordernumber, hotel_id, hotelname, room_id, room, customer_id, guest_number, date1, date2, price, image) {
+            const cardElement = document.createElement('div');
+            var number = "訂房數量:" + ordernumber;
+            var total_price = "總價:" + price * ordernumber;
+
+            cardElement.style.width = '370px';
+            cardElement.style.height = '460px';
+
+            cardElement.style.boxSizing = 'border-box';
+
+            cardElement.style.flex = '0 0 auto';
+            cardElement.style.flexDirection = 'column';
+
+            cardElement.className = 'col-lg';
+            cardElement.innerHTML = `
+            <div class="card shadow-lg" style="height: 110%;" id="roomCard_${room_id}">
+                <div class="order-number" style="position: absolute; top: 10px; left: 10px; z-index: 1; background-color: white; padding: 5px;">#: ${orderNumber}</div>
+                <img src="${image}" alt="" class="card-img-top" style="height: 230px; object-fit: cover;">
+                    <div class="card-body" style="height: 100%;">
+                    <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
+                    <a href="hotel.html?hotel_id=${encodeURIComponent(hotel_id)}">
+                        <h3 class="card-title">${hotelname}</h3>
+                    </a>
+                    <p class="card-text">${room}</p>
+                    <p class="card-text">${ordernumber}</p>
+                    //<p class="card-text">Guest: ${booker}</p>
+                    //<p class="card-text">Check-in: ${booking_date}</p>
+                    <p class="card-text">Check-in: ${date1}</p>
+                    <p class="card-text">Check-out: ${date2}</p>
+                    <p class="card-text">${total_price}</p>
+                    </div>
+                    </div>
+            </div>
+			        `;
+
+            return cardElement;
+        }
+
+        function createRow() {
+            const row = document.createElement('div');
+            row.className = 'row g-4 row-gap';
+
+            // 使用 Flexbox 布局
+            row.style.display = 'flex';
+            row.style.flexDirection = 'row';
+            row.style.flexWrap = 'wrap';
+            row.style.alignItems = 'center'; // 垂直方向居中
+            row.style.marginLeft = '-10px'; // 负 margin 抵消默认间距
+            row.style.marginRight = '-10px'; // 负 margin 抵消默认间距
+
+            return row;
+        }
+
+
+    </script>
+
+</body>
+
+</html>
