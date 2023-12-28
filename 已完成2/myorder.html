@@ -71,6 +71,7 @@
     <script src="static/js/login.js"></script>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
+        const login_status = urlParams.get('login_status');
         var user_id = localStorage.getItem('user_id');
         console.log('user_id:', user_id);
 
@@ -104,35 +105,29 @@
 
             		// 'data' 是包含所有旅店資料的 JSON 數組
             		console.log('Data:', query.response.data);
-            		var scs = query.response.data;
-
+            		var detail = query.response.data;
+					
             		let currentRow = createRow();
             		
-            		for (var i = 0; i < scs.length; i++) {
-            			//var order_id = scs[i].data[0].order_id;//可以當訂單編號
-            			var order_number = scs[i].data[0].order_number;//訂房數量
-            			//var hotel_id = scs[i].data[0].hotel_id;//
-            			var hotel_id = '還沒有';
-            			//var hotelname = scs[i].data[0].hotelname;
-            			var hotel_name = '還沒有';
-            			var room_id = scs[i].data[0].room_id;//
-            			//var room_type = scs[i].data[0].room_type;
-            			var room_type = '還沒有';
-            			var guest_number = scs[i].data[0].number_of_guest;
-            			var booking_date= scs[i].data[0].booking_date;
-            			var checkin_date = scs[i].data[0].checkin_date;
-            			var checkout_date = scs[i].data[0].checkout_date;
-            			var order_price = scs[i].data[0].order_price;
-            			//var image = scs[i].data[0].hotel_image;
-            			var image = 'static/img/帆船飯店.png';
+            		for (var j = 0; j < detail.length; j++) {
+        				var order_number = detail[j].data[0].order_number;
+            			var hotel_id = detail[j].data[0].hotel_id;
+            			var hotelname = detail[j].data[0].hotelname;
+            			var room_type = detail[j].data[0].room_type;
+            			var guest_number = detail[j].data[0].guest_number;
+            			var booking_date= detail[j].data[0].booking_date;
+            			var checkin_date = detail[j].data[0].checkin_date;
+            			var checkout_date = detail[j].data[0].checkout_date;
+            			var order_price = detail[j].data[0].order_price;
+            			var image = detail[j].data[0].room_image;
+            				
             			
-            		
             			if (currentRow.children.length === 3) {
             				cardContainer.appendChild(currentRow);
             				currentRow = createRow();
             			}
 
-            			const card = createMyOrder(order_number, hotel_id, hotel_name, room_id, room_type, booking_date, guest_number, checkin_date, checkout_date, order_price, image);
+            			const card = createMyOrder(order_number, hotel_id, hotelname, room_type, booking_date, guest_number, checkin_date, checkout_date, order_price, image);
 
             			currentRow.appendChild(card);
             		}
@@ -148,11 +143,11 @@
         var logoLink = document.getElementById('logoLink');
         logoLink.href = 'index.html?login_status=' + 'true';
 
-        function createMyOrder(order_number, hotel_id, hotel_name, room_id, room_type, booking_date, guest_number, checkin_date, checkout_date, order_price, image) {
+        function createMyOrder(order_number, hotel_id, hotelname, room_type, booking_date, guest_number, checkin_date, checkout_date, order_price, image) {
             const cardElement = document.createElement('div');
             
             var number = "訂房數量:" + order_number;
-            var total_price = "總價:" + order_price * order_number;
+            var total_price = "總價:" + order_price;
 
             cardElement.style.width = '370px';
             cardElement.style.height = '460px';
@@ -164,12 +159,12 @@
 
             cardElement.className = 'col-lg';
             cardElement.innerHTML = `
-            <div class="card shadow-lg" style="height: 110%;" id="roomCard_${room_id}">
-                <img src="${image}" alt="" class="card-img-top" style="height: 230px; object-fit: cover;">
+            <div class="card shadow-lg" style="height: 110%;">
+                <img src="${image}" alt="" class="card-img-top" style="height: 180px; object-fit: cover;">
                     <div class="card-body" style="height: 100%;">
                     <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
                     <a href="hotel.html?hotel_id=${encodeURIComponent(hotel_id)}">
-                       	<h3 class="card-title">${hotel_name}</h3>
+                       	<h3 class="card-title">${hotelname}</h3>
                     </a>
                     <p class="card-text">${room_type}</p>
                     <p class="card-text">${number}</p>
@@ -199,7 +194,10 @@
 
             return row;
         }
-
+		
+        var logoLink = document.getElementById('logoLink');
+	    // 修改链接的 href 属性，传递 loginStatus 参数
+	   	logoLink.href = 'index.html?login_status=' + 'true';
     
     </script>
 
