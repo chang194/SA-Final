@@ -222,7 +222,7 @@ INSERT INTO `tbl_room` (`room_id`, `hotel_id`, `room_type`, `room_image`, `room_
 (18, 1, ' 測試房間', 'image_path', 1000, 3, 3, 'nono'),
 (19, 1, '房型1', 'image_path', 1100, 3, 3, 'hiohoi'),
 (20, 3, '四人房', 'static/img/room4.jpg', 1500, 4, 3, NULL);
-(20, 3, '四人房', 'static/img/room4.jpg', 1500, 4, 3, NULL),
+(35, 3, '四人房', 'static/img/room4.jpg', 1500, 4, 3, NULL),
 (21, 9, '單人房', 'static/img/room8.jpg', 500, 1, 10, 'no'),
 (22, 10, '單人房', 'static/img/room8.jpg', 2000, 4, 6, 'no'),
 (23, 9, '單人房', 'static/img/room8.jpg', 500, 1, 10, 'no'),
