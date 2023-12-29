@@ -35,9 +35,6 @@
             </a>
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a href="" class="nav-link">旅遊社群</a>
-                    </li>
                     <li class="nav-item" id="myOrdersNavItem" style="display: none;">
                         <a href="myorder.html" class="nav-link">我的訂單</a>
                     </li>
@@ -62,7 +59,7 @@
     
     <div class="p-5">
     <div class="container">
-      <h1 class="row-gap">購物車介面</h1>
+      <h1 class="row-gap">我的購物車</h1>
       <div class="row g-4 row-gap" id=cardContainer>
       </div>
     </div>
@@ -114,7 +111,7 @@
                         let currentRow = createRow();
                         
                         for (var i = 0; i < scs.length; i++) {
-                      	  	var hotelName = scs[i].hotel_name;
+                      	  var hotelName = scs[i].hotel_name;
                             var room = scs[i].room_type;
                             var price = scs[i].room_price;
                             var num = scs[i].order_number;
