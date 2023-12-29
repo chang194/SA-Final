@@ -222,6 +222,21 @@ INSERT INTO `tbl_room` (`room_id`, `hotel_id`, `room_type`, `room_image`, `room_
 (18, 1, ' 測試房間', 'image_path', 1000, 3, 3, 'nono'),
 (19, 1, '房型1', 'image_path', 1100, 3, 3, 'hiohoi'),
 (20, 3, '四人房', 'static/img/room4.jpg', 1500, 4, 3, NULL);
+(20, 3, '四人房', 'static/img/room4.jpg', 1500, 4, 3, NULL),
+(21, 9, '單人房', 'static/img/room8.jpg', 500, 1, 10, 'no'),
+(22, 10, '單人房', 'static/img/room8.jpg', 2000, 4, 6, 'no'),
+(23, 9, '單人房', 'static/img/room8.jpg', 500, 1, 10, 'no'),
+(24, 10, '單人房', 'static/img/room8.jpg', 1500, 4, 6, 'no'),
+(25, 11, '雙人房', 'static/img/room8.jpg', 2500, 2, 8, 'no'),
+(26, 12, '雙人房', 'static/img/room8.jpg', 1500, 2, 10, 'no'),
+(27, 13, '三人房', 'static/img/room8.jpg', 3000, 3, 5, 'no'),
+(28, 14, '老人房', 'static/img/room8.jpg', 3000, 2, 6, 'no'),
+(29, 15, '兒童房', 'static/img/room8.jpg', 3000, 4, 5, 'no'),
+(30, 16, '兒童房', 'static/img/room8.jpg', 1500, 2, 9, 'no'),
+(31, 17, '青年房', 'static/img/room8.jpg', 2000, 4, 5, 'no'),
+(32, 18, '青年房', 'static/img/room8.jpg', 3000, 4, 6, 'no'),
+(33, 19, '男孩房', 'static/img/room8.jpg', 3000, 4, 10, 'no'),
+(34, 20, '女孩房', 'static/img/room8.jpg', 2500, 2, 10, 'no');
 
 -- --------------------------------------------------------
 
