@@ -372,8 +372,17 @@ public class RoomHelper {
         try {
             /** 取得資料庫之連線 */
             conn = DBMgr.getConnection();
+            
+
+            ////刪除空房紀錄
+            String sql = "DELETE FROM `mydb`.`tbl_roomavailability` WHERE room_id = ?";
+            PreparedStatement pres = conn.prepareStatement(sql);
+            pres.setInt(1, id);
+            pres.executeUpdate();
             /** SQL指令 */
-            String sql = "DELETE FROM `mydb`.`tbl_Room` WHERE `room_id` = ?";
+            
+            
+            sql = "DELETE FROM `mydb`.`tbl_Room` WHERE `room_id` = ?";
 
             /** 將參數回填至SQL指令當中 */
             pres = conn.prepareStatement(sql);
@@ -386,11 +395,6 @@ public class RoomHelper {
             exexcute_sql = pres.toString();
             System.out.println(exexcute_sql);
 
-            ////刪除空房紀錄
-            sql = "DELETE FROM `mydb`.`tbl_roomavailability` WHERE room_id = ?";
-            PreparedStatement pres = conn.prepareStatement(sql);
-            pres.setInt(1, id);
-            pres.executeUpdate();
 
         } catch (SQLException e) {
             /** 印出JDBC SQL指令錯誤 **/
