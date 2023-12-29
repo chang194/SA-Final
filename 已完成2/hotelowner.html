@@ -283,15 +283,14 @@
       function deleteRoom(room_id) {
     		// 调用 roomController 的 API 来删除数据库中的房间数据
     		// 使用 Fetch API 或其他适当的方式发送删除请求
-    		fetch(apiUrl, {
+    		console.log("id",room_id);
+    		var url = `api/room.do?room_id=${encodeURIComponent(room_id)}`;
+    		fetch(url, {
       			method: 'DELETE',
       			headers: {
         		'Content-Type': 'application/json',
         		// 可以根据需要添加其他请求头
       			},
-      			body: JSON.stringify({
-      				room_id: room_id
-      	        })
       		// 如果需要发送请求体，可以在这里添加 body
     		})
     		.then(response => {
