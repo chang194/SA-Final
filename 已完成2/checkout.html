@@ -71,9 +71,6 @@
       </a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a href="" class="nav-link">旅遊社群</a>
-          </li>
           <li class="nav-item" id="myOrdersNavItem" style="display: none;">
             <a href="myorder.html" class="nav-link">我的訂單</a>
           </li>
@@ -152,21 +149,9 @@
     <div class="row">
       <div class="col-md-4">
         <div class="custom-content p-4 border">
-          <h1>原始金額</h1>
+          <h1>總金額</h1>
           <hr>
           <h2 id="total_price">${total_price}</h2>
-          <h1>折扣後金額</h1>
-          <hr>
-          <h2 id="price">${price}</h2>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="custom-content p-4 border">
-          <h1>會員點數</h1>
-          <div class="memberpoint align-items-center" contenteditable="false" id="point">${point}</div>
-          <div>
-            <button class="btn btn-secondary mt-3" onclick="usepoint()">全部使用</button>
-          </div>
         </div>
       </div>
       <div class="col-md-4">
@@ -192,6 +177,8 @@
 		
 	 	console.log('user_id:', user_id);
 	 	console.log('room:', room_id);
+	 	
+	 	var price;
 	  
 	    
 	    function displayNotification(message) {
@@ -202,7 +189,6 @@
 		      getData();
 		  });
 	    
-	    var price;
 	    
 	    function getData(){
         	var id = user_id;
@@ -234,17 +220,18 @@
                   	var order_number = firstData.order_number;
                   	var location = firstData.hotel_location;
                   	console.log("n",location);
-                  	var total_price = "$" + firstData.room_price * firstData.order_number;
+                  	var total_price = firstData.total_price;
                   	var room_type = firstData.room_type;
                   	var point = firstData.customer_point;
                   	console.log("1",point)
+                  	price = total_price/order_number;
+                  	var pr = "尚未選擇房間數量";
 
                    document.getElementById('hotelname').innerText = hotelname;
                    document.getElementById('location').innerText = location;
-                   //document.getElementById('order_number').setAttribute('placeholder', order_number);
-                   document.getElementById('total_price').innerText = total_price;
+                   document.getElementById('total_price').innerText = pr;
                    document.getElementById('room_type').innerText = room_type;
-                   document.getElementById('point').innerText = point;
+
                    
                    price = firstData.room_price * firstData.order_number;
              	}
@@ -432,6 +419,26 @@
 	    
 	   	});
 	  });
+	    
+	    document.addEventListener('DOMContentLoaded', function () {
+	        // 獲取元素
+	        var orderNumberInput = document.getElementById('order_number');
+	        var totalPriceElement = document.getElementById('total_price');
+
+	        // 當 order_number 發生變動時觸發事件
+	        orderNumberInput.addEventListener('input', function () {
+	            // 獲取使用者輸入的房間數量
+	            var orderNumber = parseInt(orderNumberInput.value, 10);
+
+	            // 計算總價格
+	            var total_price = "$" + price * orderNumber;
+
+	            // 更新顯示
+	            totalPriceElement.innerText = total_price;
+	        });
+
+	        // 其他初始化和事件處理邏輯...
+	    });
 	    
 
 	    var logoLink = document.getElementById('logoLink');
