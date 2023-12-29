@@ -242,6 +242,11 @@
 	                      <h3 class="card-title">${roomtype}</h3>
 	                      <p class="card-text">${max}</p>
 	                      <p class="card-text">${roomprice}</p>
+	                      <div class="hover-target">
+	                      <label for="emptyday">查詢空房:</label>
+	                      <input type="date" class="form-control" onchange="show(this.value,'${room_id}')" id="day_${room_id}" data-room-id="${room_id}" required pattern="\d{4}-\d{2}-\d{2}">
+	                      <p id="remainingRooms_${room_id}"></p>
+	                      </div>
 	                      <label for="number">數量:</label>
 	                      <input type="number" class="form-control" id="num" required min=0>
 	                      <a class="btn btn-primary" onclick="addToCart(this,'${room_id}')">加入購物車</a>
@@ -326,7 +331,65 @@
 	  
 	  document.addEventListener("DOMContentLoaded", function() {
 		    // 在這裡執行你的其他初始化邏輯
-		});  
+		});
+	  
+	  function show(selectedDate,room_id){
+ 			var day = document.getElementById("day_" + room_id).value
+ 	        console.log("day:", day);
+ 	   		var id = room_id;
+ 	   		console.log("room",id);
+ 	   		var hotel_id = -1;
+ 			
+ 	   		var url = `api/room.do?hotel_id=${encodeURIComponent(hotel_id)}&room_id=${encodeURIComponent(id)}&day=${encodeURIComponent(day)}`
+ 			  fetch(url, {
+ 		          method: 'GET',
+ 		          headers: {
+ 		              'Content-Type': 'application/json',
+ 		          },
+ 		      })
+ 		          .then(response => {
+ 		              if (!response.ok) {
+ 		                  throw new Error('Network response was not ok.');
+ 		              }
+ 		              return response.json();
+ 		          })
+ 		          .then(query => {
+ 		        	console.log('Response from server:', query);
+ 		        	
+ 		        	console.log("data",query.response.data);
+ 		        	var roomAvailability = query.response.data;
+ 		        	
+
+ 		        	var remainingRoomsElement = document.getElementById(`remainingRooms_${room_id}`);
+ 		   		    var dayInput = document.getElementById(`day_${room_id}`);
+ 		        	var foundAvailability = roomAvailability.find(item => item.date === selectedDate);
+ 		   		    
+ 		   		    if (foundAvailability) {
+ 		   		        var remainingRooms = foundAvailability.available_quantity;
+ 		   		        remainingRoomsElement.innerText = `剩餘房間數量: ${remainingRooms}`;
+ 		   		    } else {
+ 		   		        remainingRoomsElement.innerText = '暫無空房';
+ 		   		    }
+ 		          })
+ 		          .catch(error => {
+ 		              displayNotification('資料取得失敗！');
+ 		          });
+ 			}
+ 			
+ 		
+ 		document.addEventListener("DOMContentLoaded", function() {
+ 			
+		  // 获取日期输入框
+		    var dateInputs = document.querySelectorAll('.day-input');  // 选择所有带有类名 day-input 的元素
+
+		    // 添加事件监听器
+		  dateInputs.forEach(function(dateInput) {
+            var room_id = dateInput.dataset.roomId;  // 获取 data-room-id 属性值
+            dateInput.addEventListener('input', function(event) {
+                showRemainingRooms(event.target.value, room_id);
+            });
+        });
+		});
   
     var logoLink = document.getElementById('logoLink');
     // 修改链接的 href 属性，传递 loginStatus 参数
