@@ -21,12 +21,13 @@
         }
         #hotelimage {
         max-width: 100%;
-        max-height: 200px; /* 根據需要調整最大高度 */
+        max-height: 300px; /* 根據需要調整最大高度 */
         width: auto; /* 保持原始寬高比 */
         height: auto; /* 保持原始寬高比 */
         display: block; /* 避免底部空白 */
         margin: 0 auto; /* 讓圖片水平居中 */
-        }
+        margin-right: 120px; /* 正確的屬性名稱 */
+    }
   </style>
 </head>
 
@@ -38,9 +39,6 @@
       </a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a href="" class="nav-link">旅遊社群</a>
-          </li>
           <li class="nav-item" id="myOrdersNavItem" style="display: none;">
             <a href="myorder.html" class="nav-link">我的訂單</a>
           </li>
@@ -65,14 +63,14 @@
 
   <div class="container mt-5">
     <div class="row">
-      <div class="col-lg-8">
+      <div class="col-lg-7">
           <h1 id="hotelname">${hotel_name}</h1>
           <p id="location">${location}</p>
-          <p id="hotelphone">旅店電話</p>
+          <p id="hotelphone">${hotel_phone}</p>
           <p id="intro">${intro}</p>
       </div>
-      <div class="col-lg-4">
-            <img src="${hotel_image}" alt="" id="hotelimage" style="max-width: 100%; height: auto; display: block;">
+      <div class="col-lg-5">
+            <img src="${hotel_image}" alt="" id="hotelimage" style="max-width: 2000px; width: auto; height: auto; display: block;">
       </div>
     </div>
     <div class="row">
@@ -137,6 +135,7 @@
 		                  	var hotel_image = firstData.image;
 		                  	var location = "旅店地址 : " + firstData.location;
 		                  	var intro = "旅店簡介 : " + firstData.introduction;
+		                  	var hotel_phone = "旅店電話 : " + firstData.hotel_phone;
 	
 		                   // 將 email 資料設定到你的 HTML 元素
 		                   document.getElementById('hotelname').innerText = hotelname;
@@ -144,6 +143,7 @@
 		                   hotelImageElement.src = hotel_image;
 		                   document.getElementById('location').innerText = location;
 		                   document.getElementById('intro').innerText = intro;
+		                   document.getElementById('hotelphone').innerText = hotel_phone;
 	                 	}
 	      	    	
 	          })
@@ -194,7 +194,7 @@
 		                  console.log("Room id:",room_id);
 
 		                  // 如果当前行已经有了三个卡片，创建新的行容器
-		                  if (currentRow.children.length === 4) {
+		                  if (currentRow.children.length === 3) {
 		                      cardContainer.appendChild(currentRow);
 		                      currentRow = createRow(); // 创建新的行
 		                  }
@@ -219,7 +219,6 @@
 	  
 	  function createRoomCard(roomtype, maxcapacity, price, image,room_id) {
 	      const cardElement = document.createElement('div');
-	      console.log("123:",room_id);
 	      var max = "房型人數 : " + maxcapacity;
 	      var roomprice = "價格 : " + price;
 	      var img = image;
@@ -242,16 +241,9 @@
 	                  <div style="height: 100%; display: flex; flex-direction: column; justify-content: space-between;">
 	                      <h3 class="card-title">${roomtype}</h3>
 	                      <p class="card-text">${max}</p>
-	                      <div class="hover-target">
-	                      <label for="emptyday">查詢空房:</label>
-	                      <input type="date" class="form-control" onchange="show(this.value,'${room_id}')" id="day_${room_id}" data-room-id="${room_id}" required pattern="\d{4}-\d{2}-\d{2}">
-	                      <p id="remainingRooms_${room_id}"></p>
-	                      </div>
 	                      <p class="card-text">${roomprice}</p>
-	                      <div style="display: flex; align-items: center;">
-	                      <label for="number" style="margin-right: 8px;">數量:</label>
-	                      <input type="number" class="form-control" style="width: 80px; height: 30px;" id="num" required min="0">
-	                  </div>
+	                      <label for="number">數量:</label>
+	                      <input type="number" class="form-control" id="num" required min=0>
 	                      <a class="btn btn-primary" onclick="addToCart(this,'${room_id}')">加入購物車</a>
 	                  </div>
 	              </div>
@@ -277,6 +269,7 @@
 	  
 	  
 	  function addToCart(button,room_id) {
+		  
 		    if(login_status != 'true'){
 		    	alert('請先登入');
 		    	window.location.href = 'login.html';
@@ -301,7 +294,7 @@
 	                room_id: room_id,
 	                order_number: num,
 	            };
-		    apiUrl = 'api/shoppingcart.do';
+		    apiUrl = `api/shoppingcart.do`;
 		    fetch(apiUrl, {
                 method: 'POST',
                 headers: {
@@ -330,68 +323,15 @@
                     console.error('錯誤！', error);
                 });
         }
+	  
+	  document.addEventListener("DOMContentLoaded", function() {
+		    // 在這裡執行你的其他初始化邏輯
+		});  
+  
+    var logoLink = document.getElementById('logoLink');
+    // 修改链接的 href 属性，传递 loginStatus 参数
+   	logoLink.href = 'index.html?login_status=' + 'true';
 
-   		function show(selectedDate,room_id){
-   			var day = document.getElementById("day_" + room_id).value
-   	        console.log("day:", day);
-   	   		var id = room_id;
-   	   		console.log("room",id);
-   	   		var hotel_id = -1;
-   			
-   	   		var url = `api/room.do?hotel_id=${encodeURIComponent(hotel_id)}&room_id=${encodeURIComponent(id)}&day=${encodeURIComponent(day)}`
-   			  fetch(url, {
-   		          method: 'GET',
-   		          headers: {
-   		              'Content-Type': 'application/json',
-   		          },
-   		      })
-   		          .then(response => {
-   		              if (!response.ok) {
-   		                  throw new Error('Network response was not ok.');
-   		              }
-   		              return response.json();
-   		          })
-   		          .then(query => {
-   		        	console.log('Response from server:', query);
-   		        	
-   		        	console.log("data",query.response.data);
-   		        	var roomAvailability = query.response.data;
-   		        	
-
-   		        	var remainingRoomsElement = document.getElementById(`remainingRooms_${room_id}`);
-   		   		    var dayInput = document.getElementById(`day_${room_id}`);
-   		        	var foundAvailability = roomAvailability.find(item => item.date === selectedDate);
-   		   		    
-   		   		    if (foundAvailability) {
-   		   		        var remainingRooms = foundAvailability.available_quantity;
-   		   		        remainingRoomsElement.innerText = `剩餘房間數量: ${remainingRooms}`;
-   		   		    } else {
-   		   		        remainingRoomsElement.innerText = '暫無空房';
-   		   		    }
-   		          })
-   		          .catch(error => {
-   		              displayNotification('資料取得失敗！');
-   		          });
-   			}
-   			
-   		
-   		document.addEventListener("DOMContentLoaded", function() {
-   			
-  		  // 获取日期输入框
-  		    var dateInputs = document.querySelectorAll('.day-input');  // 选择所有带有类名 day-input 的元素
-
-  		    // 添加事件监听器
-  		  dateInputs.forEach(function(dateInput) {
-              var room_id = dateInput.dataset.roomId;  // 获取 data-room-id 属性值
-              dateInput.addEventListener('input', function(event) {
-                  showRemainingRooms(event.target.value, room_id);
-              });
-          });
-  		});
-   		
-   		var logoLink = document.getElementById('logoLink');
-   	    // 修改链接的 href 属性，传递 loginStatus 参数
-   	   	logoLink.href = 'index.html?login_status=' + 'true';
   </script>
 
 </body>
