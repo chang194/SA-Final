@@ -221,9 +221,12 @@
               for (var i = 0; i < hotels.length; i++) {
             	  var hotelName = hotels[i].hotelname;
                   var location = hotels[i].location;
-                  var hotel_id = hotels[i].hotel_id
+                  var hotel_id = hotels[i].hotel_id;
+                  var image = hotels[i].image;
                   console.log("Hotel Name:", hotelName);
                   console.log("Location:", location);
+                  console.log("Id",hotel_id);
+                  console.log("image",image);
 
                   // 如果当前行已经有了三个卡片，创建新的行容器
                   if (currentRow.children.length === 3) {
@@ -232,7 +235,7 @@
                   }
 
                   // 创建旅店卡片
-                  const card = createHotelCard(hotel_id, hotelName, location);
+                  const card = createHotelCard(hotel_id, hotelName, location,image);
 
                   // 将卡片添加到当前行容器中
                   currentRow.appendChild(card);
