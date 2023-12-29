@@ -341,7 +341,7 @@
             var checkindate = document.getElementById('checkin').value;
             var checkoutdate = document.getElementById('checkout').value;
             var guest_number = document.getElementById('guest_number').value;
-            var order_price = price; //這裡要改
+            var order_price = price*order_number; //這裡要改
             
             if (!validateEmail(email)) {
                 alert('請輸入有效的電子郵件！');
